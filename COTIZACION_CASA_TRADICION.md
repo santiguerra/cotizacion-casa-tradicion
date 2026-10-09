@@ -1,4 +1,21 @@
+---
+pdf_options:
+  format: A4
+  margin:
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+---
 <style>
+
+  @page {
+    margin: 20mm;
+  }
+  @page :first {
+    margin: 0;
+  }
+
   @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@800;900&family=Plus+Jakarta+Sans:wght@400;700;900&display=swap');
   
   :root {
