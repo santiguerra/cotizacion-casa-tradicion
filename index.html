@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="bg-[#070605] text-white">
+<html lang="es" class="scroll-smooth bg-[#070605] text-white">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,90 +9,93 @@
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://unpkg.com/lenis@1.1.9/dist/lenis.min.js"></script>
 
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; background: #070605; }
     .font-cinzel { font-family: 'Cinzel', serif; }
     
-    /* CURSOR PREMIUM */
-    @media (pointer: fine) {
-      * { cursor: none !important; }
-      #custom-cursor {
-        position: fixed; top: 0; left: 0; width: 24px; height: 24px;
-        background: white; border-radius: 50%; pointer-events: none;
-        mix-blend-mode: difference; z-index: 99999;
-        transform: translate(-50%, -50%);
-        transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .cursor-grow { width: 80px !important; height: 80px !important; background: #D4AF37 !important; mix-blend-mode: normal !important; opacity: 0.8; filter: blur(5px); }
-    }
-
-    /* BENTO CLIP PATHS */
+    /* Bento Clip Paths */
     .shape-tl { clip-path: polygon(0% 0%, 100% 0%, 100% 65%, 75% 100%, 0% 100%); }
     .shape-tr { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 25% 100%, 0% 60%); }
     .shape-bl { clip-path: polygon(0% 0%, 75% 0%, 100% 35%, 100% 100%, 0% 100%); }
     .shape-br { clip-path: polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 30%); }
 
-    /* TEXT REVEAL CSS */
-    .word { display: inline-block; overflow: hidden; vertical-align: bottom; }
-    .word-inner { display: inline-block; transform: translateY(110%); }
-
-    .huge-text { font-size: clamp(3rem, 12vw, 15rem); line-height: 0.85; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; white-space: nowrap; }
+    /* Bleach Video Text Style */
+    .huge-text { 
+      font-size: clamp(3rem, 12vw, 15rem); 
+      line-height: 0.85; 
+      font-weight: 900; 
+      text-transform: uppercase; 
+      letter-spacing: -0.02em; 
+      white-space: nowrap; 
+    }
     
-    @keyframes kenburns { 0% { transform: scale(1); } 50% { transform: scale(1.1) translate(-2%, -2%); } 100% { transform: scale(1); } }
-    .animate-kenburns { animation: kenburns 15s ease-in-out infinite; }
-    
-    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
-    .animate-float { animation: float 6s ease-in-out infinite; }
+    /* Cinematic Video Simulation (Ken Burns) */
+    @keyframes kenburns {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1) translate(-2%, -2%); }
+      100% { transform: scale(1); }
+    }
+    .animate-kenburns {
+      animation: kenburns 10s ease-in-out infinite;
+    }
 
-    /* 3D CARDS */
-    .flip-card-3d { perspective: 1500px; }
-    .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); transform-style: preserve-3d; }
+    /* 3D Flip Base */
+    .flip-card-3d { perspective: 1200px; }
+    .flip-card-inner { 
+      position: relative; 
+      width: 100%; 
+      height: 100%; 
+      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); 
+      transform-style: preserve-3d; 
+    }
     .flip-card-3d.is-flipped .flip-card-inner { transform: rotateY(180deg); }
-    .flip-card-front, .flip-card-back { position: absolute; inset: 0; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 1.25rem; overflow: hidden; background: #000; }
-    .flip-card-front img, .flip-card-back img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .flip-card-front, .flip-card-back { 
+      position: absolute; 
+      inset: 0; 
+      width: 100%; 
+      height: 100%; 
+      -webkit-backface-visibility: hidden; 
+      backface-visibility: hidden; 
+      border-radius: 1.25rem; 
+      overflow: hidden; 
+      background: #000;
+    }
+    .flip-card-front img, .flip-card-back img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
     .flip-card-back { transform: rotateY(180deg); }
-    
-    /* 3D TILT EFFECT PARENT */
-    .tilt-card { transform-style: preserve-3d; }
-    .tilt-content { transform: translateZ(40px); } /* Pops text out during tilt */
   </style>
 </head>
 <body class="antialiased">
 
-  <div id="custom-cursor"></div>
-
-  <!-- Z-AXIS SEQUENCE (HERO ABSORB) -->
   <div id="z-sequence" class="w-screen h-screen overflow-hidden relative bg-black">
     
-    <!-- L4: Price -->
+    <!-- Layer 4: The Price / Pitch (Black) -->
     <div id="black-section" class="absolute inset-0 flex flex-col justify-center items-center text-white z-10 p-8 opacity-0 scale-50">
-      <h2 class="text-[8vw] font-black tracking-tighter leading-none mb-12 text-center text-[#D4AF37] font-cinzel split-text">INVERSIÓN:<br>$2.500.000 COP</h2>
+      <h2 class="text-[8vw] font-black tracking-tighter leading-none mb-12 text-center text-[#D4AF37] font-cinzel">INVERSIÓN:<br>$2.500.000 COP</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
-        <div class="tilt-card bg-white/5 p-8 rounded-2xl border border-white/10 hover-trigger">
-          <div class="tilt-content">
-            <h3 class="text-xl font-bold mb-4 split-text">1. El Porqué</h3>
-            <p class="text-sm text-stone-400">Esta no es una plantilla. Es código nativo, animaciones nivel agencia global y optimización extrema SEO B2B.</p>
-          </div>
+        <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
+          <h3 class="text-xl font-bold mb-4">1. El Porqué del Precio</h3>
+          <p class="text-sm text-stone-400">Esta no es una plantilla de $500k. Es código nativo, animaciones nivel agencia global y optimización SEO extrema para dominar las búsquedas B2B.</p>
         </div>
-        <div class="tilt-card bg-white/5 p-8 rounded-2xl border border-[#D4AF37]/30 hover-trigger">
-          <div class="tilt-content">
-            <h3 class="text-xl font-bold mb-4 text-[#D4AF37] split-text">2. Mantenimiento</h3>
-            <p class="text-sm text-stone-400">Soporte 24/7 continuo por $150.000 COP/mes. Tu plataforma siempre en línea, blindada y veloz.</p>
-          </div>
+        <div class="bg-white/5 p-8 rounded-2xl border border-[#D4AF37]/30">
+          <h3 class="text-xl font-bold mb-4 text-[#D4AF37]">2. Soporte 24/7 y Mant.</h3>
+          <p class="text-sm text-stone-400">Soporte técnico y mantenimiento continuo por solo $150.000 COP/mes. Tu plataforma siempre en línea, veloz y monitoreada.</p>
         </div>
-        <div class="tilt-card bg-white/5 p-8 rounded-2xl border border-white/10 hover-trigger">
-          <div class="tilt-content">
-            <h3 class="text-xl font-bold mb-4 split-text">3. Herramientas</h3>
-            <p class="text-sm text-stone-400">Catálogo 3D y retención inmersiva. La web hace el trabajo de convencer al cliente por ti.</p>
-          </div>
+        <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
+          <h3 class="text-xl font-bold mb-4">3. Herramientas de Cierre</h3>
+          <p class="text-sm text-stone-400">Incluye catálogo 3D avanzado y módulos de retención. Tu página web hará el trabajo de venta por ti, sumergiendo al cliente en la marca.</p>
         </div>
       </div>
-      <p class="mt-12 text-stone-500 uppercase tracking-widest text-xs font-bold animate-pulse">Sigue haciendo scroll ⬇</p>
+      <p class="mt-12 text-stone-500 uppercase tracking-widest text-xs font-bold animate-pulse">Sigue haciendo scroll para ver de lo que somos capaces ⬇</p>
     </div>
 
-    <!-- L3: Gold -->
+    <!-- Layer 3: Gold Section -->
     <div id="gold-section" class="absolute inset-0 bg-[#D4AF37] flex flex-col justify-center items-center text-black z-20 origin-center">
       <div class="flex flex-col items-center">
         <h2 class="huge-text font-cinzel gold-text-1">NUESTRO</h2>
@@ -100,76 +103,74 @@
       </div>
     </div>
 
-    <!-- L2: Red -->
-    <div id="red-section" class="absolute inset-0 bg-[#A84A2E] flex flex-col justify-center items-center text-white z-30 origin-center overflow-hidden">
-      <div class="absolute inset-[-10%] opacity-30 mix-blend-multiply"><img id="red-bg-img" src="assets/img/cocina.webp" class="w-full h-full object-cover"></div>
+    <!-- Layer 2: Red Section -->
+    <div id="red-section" class="absolute inset-0 bg-[#A84A2E] flex flex-col justify-center items-center text-white z-30 origin-center">
+      <div class="absolute inset-0 opacity-20 mix-blend-multiply"><img src="assets/img/cocina.webp" class="w-full h-full object-cover"></div>
       <div class="flex flex-col items-center z-10">
         <h2 class="huge-text font-cinzel red-text-1">CADA PIXEL</h2>
         <h2 class="huge-text font-cinzel red-text-2 text-black">CUENTA.</h2>
       </div>
     </div>
 
-    <!-- L1: Bento Hero -->
+    <!-- Layer 1: The Jigsaw Bento Hero -->
     <div id="hero-layer" class="absolute inset-0 bg-[#070605] z-40 p-4 pt-12 origin-center">
       <div id="hero-bento" class="w-full h-full max-w-7xl mx-auto relative origin-center">
-        <div class="absolute top-0 left-0 w-[46%] h-[58%] tilt-card hover-trigger">
-          <div class="w-full h-full bg-[#120F0D] rounded-[2rem] shape-tl p-8 flex flex-col border border-white/10 shadow-2xl relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
-            <h1 class="text-4xl lg:text-6xl font-black text-white leading-none tracking-tighter mb-4 tilt-content relative z-10 split-text-hero">
+        <div class="absolute top-0 left-0 w-[46%] h-[58%]">
+          <div class="w-full h-full bg-[#120F0D] rounded-[2rem] shape-tl p-8 flex flex-col border border-white/10 shadow-2xl">
+            <h1 class="text-4xl lg:text-6xl font-black text-white leading-none tracking-tighter mb-4">
               COTIZACIÓN WEB<br><span class="text-[#D4AF37]">CASA TRADICIÓN.</span>
             </h1>
-            <div class="flex gap-4 mt-auto w-[85%] h-32 tilt-content relative z-10">
-              <div class="w-1/3 h-full bg-[#1F4D25] rounded-2xl flex items-center justify-center p-2 border border-white/5 overflow-hidden group"><img src="assets/logo_casa_tradicion.png" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"></div>
+            <div class="flex gap-4 mt-auto w-[85%] h-32">
+              <div class="w-1/3 h-full bg-[#1F4D25] rounded-2xl flex items-center justify-center p-2 border border-white/5"><img src="assets/logo_casa_tradicion.png" class="w-full h-full object-contain"></div>
               <div class="w-2/3 flex flex-col justify-between h-full py-1">
                 <div class="bg-black/50 border border-white/5 rounded-xl p-3"><p class="text-[10px] lg:text-xs font-bold text-stone-300">Desarrollo interactivo B2B.<br>Alto rendimiento y diseño inmersivo.</p></div>
                 <div class="flex gap-2">
-                  <div class="w-1/2 bg-[#A84A2E] rounded-xl flex items-center justify-center font-bold text-[10px] uppercase overflow-hidden relative"><div class="absolute inset-0 bg-white/20 -translate-x-full hover:translate-x-0 transition-transform"></div>Meta Level</div>
+                  <div class="w-1/2 bg-[#A84A2E] rounded-xl flex items-center justify-center font-bold text-[10px] uppercase">Meta Level</div>
                   <div class="w-1/2 bg-[#D4AF37] text-black rounded-xl flex items-center justify-center font-bold text-[10px] uppercase">Premium</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="absolute top-0 right-0 w-[53%] h-[68%] tilt-card hover-trigger">
-          <div class="w-full h-full bg-black rounded-[2rem] shape-tr relative border border-white/10 overflow-hidden">
-            <img src="assets/img/hero-patacones.webp" class="w-full h-full object-cover opacity-80 animate-kenburns">
+        <div class="absolute top-0 right-0 w-[53%] h-[68%]">
+          <div class="w-full h-full bg-black rounded-[2rem] shape-tr relative border border-white/10">
+            <img src="assets/img/hero-patacones.webp" class="w-full h-full object-cover opacity-80">
             <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-            <div class="absolute top-6 left-16 text-white font-bold text-xs tracking-widest uppercase bg-black/80 px-4 py-2 rounded-full backdrop-blur-md tilt-content">Dirección de Arte</div>
+            <div class="absolute top-6 left-16 text-white font-bold text-xs tracking-widest uppercase bg-black/80 px-4 py-2 rounded-full backdrop-blur-md">Dirección de Arte</div>
           </div>
         </div>
-        <div class="absolute bottom-0 left-0 w-[64%] h-[41%] tilt-card hover-trigger">
-          <div class="w-full h-full bg-black rounded-[2rem] shape-bl relative border border-white/10 overflow-hidden">
-            <img src="assets/img/finca.webp" class="w-full h-full object-cover opacity-60 animate-kenburns" style="animation-direction: reverse;">
-            <div class="absolute bottom-6 left-8 text-[#D4AF37] font-bold text-xs tracking-widest uppercase bg-black/80 px-4 py-2 rounded-full tilt-content">Animación Nivel Dios</div>
+        <div class="absolute bottom-0 left-0 w-[64%] h-[41%]">
+          <div class="w-full h-full bg-black rounded-[2rem] shape-bl relative border border-white/10">
+            <img src="assets/img/finca.webp" class="w-full h-full object-cover opacity-60">
+            <div class="absolute bottom-6 left-8 text-[#D4AF37] font-bold text-xs tracking-widest uppercase bg-black/80 px-4 py-2 rounded-full">Animación Nivel Dios</div>
           </div>
         </div>
-        <div class="absolute bottom-0 right-0 w-[35%] h-[31%] tilt-card hover-trigger">
-          <div class="w-full h-full bg-[#1A1613] rounded-[2rem] shape-br p-6 flex flex-col items-end justify-end relative border border-[#D4AF37]/30 overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-[#D4AF37]/20 blur-[40px] rounded-full animate-float"></div>
-            <h3 class="text-white font-black text-2xl lg:text-4xl z-10 tilt-content">$2.5M COP</h3>
-            <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-widest z-10 tilt-content">Valor Proyecto</span>
+        <div class="absolute bottom-0 right-0 w-[35%] h-[31%]">
+          <div class="w-full h-full bg-[#1A1613] rounded-[2rem] shape-br p-6 flex flex-col items-end justify-end relative border border-[#D4AF37]/30">
+            <h3 class="text-white font-black text-2xl lg:text-4xl z-10">$2.5M COP</h3>
+            <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-widest z-10">Valor del Proyecto</span>
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-[#D4AF37]/20 blur-[40px] rounded-full"></div>
           </div>
         </div>
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-50 animate-bounce hover-trigger">
-          <span class="text-white font-bold text-[10px] uppercase tracking-widest bg-black/80 px-4 py-2 rounded-full border border-white/20 backdrop-blur">Scrollea</span>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-50 animate-bounce">
+          <span class="text-white font-bold text-[10px] uppercase tracking-widest bg-black/80 px-4 py-2 rounded-full border border-white/20">Scrollea</span>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- DEMOS DE CAPACIDAD -->
   <main class="bg-[#070605] relative z-0">
-    
-    <!-- CAPACIDADES Y DEMOS -->
-    <section class="py-32 px-4 sm:px-6 max-w-7xl mx-auto overflow-hidden">
-      <div class="text-center mb-24 section-header">
-        <h2 class="text-4xl md:text-6xl font-black text-[#D4AF37] font-cinzel split-text">LO QUE SOMOS CAPACES.</h2>
-        <p class="text-stone-400 mt-4 text-xl fade-up">Módulos técnicos interactivos. Así elevamos a Casa Tradición.</p>
+    <section class="py-32 px-4 sm:px-6 max-w-7xl mx-auto">
+      <div class="text-center mb-24">
+        <h2 class="text-4xl md:text-6xl font-black text-white font-cinzel text-[#D4AF37]">LO QUE SOMOS CAPACES DE HACER.</h2>
+        <p class="text-stone-400 mt-4 text-xl">Mira estos módulos técnicos interactivos. Así es como elevaremos Casa Tradición.</p>
       </div>
 
-      <!-- Demo 1: Showroom -->
+      <!-- Demo 1: Showroom 3D Expansion -->
       <div class="mb-32">
-        <h3 class="text-3xl font-black text-white font-cinzel mb-2 split-text">1. Catálogo 3D Inmersivo</h3>
-        <p class="text-stone-500 mb-8 fade-up">Dale clic a una tarjeta para expandir en 3D el producto.</p>
+        <h3 class="text-3xl font-black text-white font-cinzel mb-2">1. Catálogo 3D Inmersivo</h3>
+        <p class="text-stone-500 mb-8">No usamos listas aburridas. Dale clic a una tarjeta para ver cómo rota hacia el centro y reproduce el video del plato.</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="showroom-grid">
           <!-- JS Inject -->
         </div>
@@ -177,24 +178,33 @@
 
       <!-- Demo 2: Referidos -->
       <div>
-        <h3 class="text-3xl font-black text-white font-cinzel mb-2 split-text">2. Sistema de Referidos</h3>
-        <p class="text-stone-500 mb-8 fade-up">Recomienda y desbloquea módulos permanentes.</p>
+        <h3 class="text-3xl font-black text-white font-cinzel mb-2">2. Sistema de Referidos Exclusivo</h3>
+        <p class="text-stone-500 mb-8">El crecimiento mutuo es clave. Si recomiendas nuestros servicios a otra empresa y cerramos contrato, desbloqueas beneficios permanentes en tu plataforma.</p>
         
-        <div class="bg-[#120F0D] rounded-3xl p-8 border border-white/10 flex flex-col md:flex-row items-center gap-12 fade-scale hover-trigger tilt-card">
-          <div class="w-full md:w-1/2 tilt-content">
-            <div class="flex items-center gap-2 bg-black p-1.5 rounded-full border border-white/5 w-max mb-8 mx-auto md:mx-0 shadow-lg">
+        <div class="bg-[#120F0D] rounded-3xl p-8 border border-white/10 flex flex-col md:flex-row items-center gap-12">
+          <div class="w-full md:w-1/2">
+            <div class="flex items-center gap-2 bg-black p-1.5 rounded-full border border-white/5 w-max mb-8 mx-auto md:mx-0 shadow-lg relative">
               <button id="ref-btn-std" onclick="toggleReferral(false)" class="px-6 py-2 rounded-full text-xs font-bold bg-[#D4AF37] text-black transition-all">Estándar</button>
               <button id="ref-btn-ref" onclick="toggleReferral(true)" class="px-6 py-2 rounded-full text-xs font-bold text-stone-400 hover:text-white transition-all">Con Referido Activo</button>
             </div>
             <div class="space-y-4">
-              <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[#D4AF37] font-bold">✓</div><span class="text-sm font-bold text-white">Soporte Técnico 24/7</span></div>
-              <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[#D4AF37] font-bold">✓</div><span class="text-sm font-bold text-white">Actualizaciones Seguridad</span></div>
-              <div id="ref-extra-feat" class="flex items-center gap-3 opacity-30 grayscale transition-all duration-500"><div class="w-8 h-8 rounded-full bg-[#10B981]/20 flex items-center justify-center text-[#10B981] font-bold text-lg leading-none">+</div><span class="text-sm font-bold text-[#10B981]">Módulos Adicionales GRATIS</span></div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[#D4AF37] font-bold">✓</div>
+                <span class="text-sm font-bold text-white">Soporte Técnico 24/7</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[#D4AF37] font-bold">✓</div>
+                <span class="text-sm font-bold text-white">Actualizaciones de Seguridad</span>
+              </div>
+              <div id="ref-extra-feat" class="flex items-center gap-3 opacity-30 grayscale transition-all duration-500">
+                <div class="w-8 h-8 rounded-full bg-[#10B981]/20 flex items-center justify-center text-[#10B981] font-bold text-lg leading-none">+</div>
+                <span class="text-sm font-bold text-[#10B981]">Módulos Adicionales GRATIS</span>
+              </div>
             </div>
           </div>
-          <div class="w-full md:w-1/2 bg-black p-8 rounded-2xl text-center border border-[#D4AF37]/30 relative overflow-hidden shadow-2xl tilt-content">
-            <div class="absolute inset-0 bg-gradient-to-t from-[#D4AF37]/10 to-transparent animate-pulse"></div>
-            <p class="text-xs text-stone-500 font-bold uppercase mb-4 relative z-10">Mantenimiento Mensual</p>
+          <div class="w-full md:w-1/2 bg-black p-8 rounded-2xl text-center border border-[#D4AF37]/30 relative overflow-hidden shadow-2xl">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#D4AF37]/5 to-transparent"></div>
+            <p class="text-xs text-stone-500 font-bold uppercase mb-4 relative z-10">Inversión Mensual de Mantenimiento</p>
             <div class="flex justify-center items-center gap-4 relative z-10 h-16">
               <h4 id="price-old" class="text-3xl font-black text-stone-600 line-through hidden transition-all">$150.000</h4>
               <h4 id="price-current" class="text-5xl lg:text-6xl font-black text-[#D4AF37] transition-all">$150.000</h4>
@@ -205,156 +215,168 @@
         </div>
       </div>
     </section>
-
-    <!-- ALCANCE -->
-    <section class="py-32 px-4 sm:px-6 relative z-40 bg-[#D4AF37] text-black border-t border-black overflow-hidden">
+    
+    
+    <!-- NUEVAS SECCIONES COMERCIALES (ALCANCE, CRONOGRAMA Y PAGOS) -->
+    
+    <!-- ALCANCE (Scope) -->
+    <section id="seccion-alcance" class="py-32 px-4 sm:px-6 relative z-40 bg-[#D4AF37] text-black border-t border-black overflow-hidden">
       <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
         <div class="w-full md:w-1/2">
-          <h2 class="text-[8vw] md:text-[6vw] leading-[0.85] font-black tracking-tighter uppercase mb-8 split-text">NUESTRO<br>ALCANCE.</h2>
-          <p class="text-xl font-bold border-l-4 border-black pl-4 fade-up delay-100">No es solo web. Es identidad visual cruzada con un motor B2B.</p>
+          <h2 class="text-[8vw] md:text-[6vw] leading-[0.85] font-black tracking-tighter uppercase mb-8"><span id="alcance-title" class="block origin-left">NUESTRO<br>ALCANCE.</span></h2>
+          <p class="text-xl font-bold border-l-4 border-black pl-4">No es solo una web. Es una identidad visual inmersiva cruzada con un motor de ventas B2B.</p>
         </div>
-        <div class="w-full md:w-1/2 space-y-6 list-stagger-1">
-          <div class="bg-black text-white p-8 rounded-2xl tilt-card hover-trigger">
-            <div class="tilt-content">
-              <h4 class="text-xl font-black uppercase text-[#D4AF37] mb-2">1. Identidad Interactiva</h4>
-              <p class="text-sm">Animaciones GSAP y diseño editorial premium.</p>
-            </div>
+        <div class="w-full md:w-1/2 space-y-6">
+          <div class="alcance-card bg-black text-white p-8 rounded-2xl">
+            <h4 class="text-xl font-black uppercase text-[#D4AF37] mb-2">1. Identidad Interactiva</h4>
+            <p class="text-sm">Animaciones GSAP, diseño editorial y catálogos 3D que proyectan el estatus premium de Casa Tradición.</p>
           </div>
-          <div class="bg-white/20 p-8 rounded-2xl border border-black/10 tilt-card hover-trigger">
-            <div class="tilt-content">
-              <h4 class="text-xl font-black uppercase mb-2">2. Pasarela B2B WhatsApp</h4>
-              <p class="text-sm">Checkout fluido, captura de datos y orden automática a tu chat.</p>
-            </div>
+          <div class="alcance-card bg-white/20 p-8 rounded-2xl border border-black/10">
+            <h4 class="text-xl font-black uppercase mb-2">2. Pasarela B2B WhatsApp</h4>
+            <p class="text-sm">Sistema de Checkout donde el usuario llena su info. Envía la orden directa al chat ("Adjunto pago de X..."). Listo para escalar a pasarela bancaria real en el futuro comprando la licencia.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ROADMAP DETALLADO Y TECNOLOGÍA -->
-    <section class="py-32 px-4 sm:px-6 relative z-40 bg-[#A84A2E] text-white overflow-hidden">
+    <!-- CRONOGRAMA (Horizontal Scroll or Stark Grid) -->
+    
+    <!-- CRONOGRAMA Y TECNOLOGIA -->
+    <section id="seccion-cronograma" class="py-32 px-4 sm:px-6 relative z-40 bg-[#A84A2E] text-white overflow-hidden">
       <div class="max-w-7xl mx-auto">
-        <h2 class="text-[6vw] md:text-[5vw] leading-[0.85] font-black tracking-tighter uppercase mb-16 text-center text-black split-text">ROADMAP Y STACK.</h2>
+        <h2 id="roadmap-title" class="text-[6vw] md:text-[5vw] leading-[0.85] font-black tracking-tighter uppercase mb-16 text-center text-black">ROADMAP DETALLADO Y TECNOLOGÍA.</h2>
         
-        <div class="mb-16 bg-black/60 p-8 rounded-3xl border border-white/10 tech-card tilt-card hover-trigger">
-          <div class="tilt-content">
-            <h3 class="text-[#D4AF37] font-black text-2xl uppercase mb-6 font-cinzel tracking-widest border-b border-white/10 pb-4">Stack Tecnológico (High-End)</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div><div class="font-bold text-lg">Next.js & React 19</div><div class="text-xs text-stone-400 mt-1">Framework de élite. Rápido.</div></div>
-              <div><div class="font-bold text-lg text-white">Google Firebase</div><div class="text-xs text-stone-400 mt-1">Base de datos Firestore en tiempo real.</div></div>
-              <div><div class="font-bold text-lg">TypeScript & Zustand</div><div class="text-xs text-stone-400 mt-1">Sin errores y estado optimizado.</div></div>
-              <div><div class="font-bold text-lg text-white">Tailwind & Motion</div><div class="text-xs text-stone-400 mt-1">Dirección de arte paramétrica.</div></div>
+        <!-- TECNOLOGÍAS USADAS -->
+        <div class="mb-16 bg-black/60 p-8 rounded-3xl border border-white/10 tech-card">
+          <h3 class="text-[#D4AF37] font-black text-2xl uppercase mb-6 font-cinzel tracking-widest border-b border-white/10 pb-4">Stack Tecnológico (High-End)</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div>
+              <div class="font-bold text-lg">Next.js & React 19</div>
+              <div class="text-xs text-stone-400 mt-1">Framework de élite. Ultra rápido y responsivo.</div>
+            </div>
+            <div>
+              <div class="font-bold text-lg text-white">Google Firebase</div>
+              <div class="text-xs text-stone-400 mt-1">Base de datos en tiempo real para almacenar usuarios y catálogos.</div>
+            </div>
+            <div>
+              <div class="font-bold text-lg">TypeScript & Zustand</div>
+              <div class="text-xs text-stone-400 mt-1">Arquitectura robusta, sin errores técnicos y estado local hiper-optimizado.</div>
+            </div>
+            <div>
+              <div class="font-bold text-lg text-white">Tailwind CSS & Motion</div>
+              <div class="text-xs text-stone-400 mt-1">Dirección de arte paramétrica y animaciones nivel cine.</div>
             </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 list-stagger-2">
-          <div class="mes-card bg-black/40 p-8 rounded-[2rem] border border-white/10 relative overflow-hidden tilt-card hover-trigger group">
-            <div class="text-[#D4AF37] font-black text-8xl absolute -top-4 -right-4 opacity-20 group-hover:scale-125 transition-transform">01</div>
-            <div class="tilt-content relative z-10">
-              <h3 class="text-2xl font-black font-cinzel mb-6 text-white">Mes 1: Frontend</h3>
-              <ul class="text-xs text-stone-300 space-y-3 font-medium">
-                <li><span class="text-[#D4AF37] font-bold">Día 01-05:</span> Wireframes.</li>
-                <li><span class="text-[#D4AF37] font-bold">Día 06-15:</span> Setup Next.js.</li>
-                <li><span class="text-[#D4AF37] font-bold">Día 16-25:</span> Catálogos 3D.</li>
-                <li><span class="text-[#D4AF37] font-bold">Día 26-30:</span> Físicas y GSAP.</li>
-              </ul>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="mes-card bg-black/40 p-8 rounded-[2rem] border border-white/10 relative overflow-hidden group hover:bg-black transition-colors">
+            <div class="text-[#D4AF37] font-black text-8xl absolute -top-4 -right-4 opacity-20">01</div>
+            <h3 class="text-2xl font-black font-cinzel mb-6 relative z-10 text-white">Mes 1: Frontend & Arte</h3>
+            <ul class="text-xs text-stone-300 relative z-10 space-y-3 font-medium">
+              <li><span class="text-[#D4AF37] font-bold">Día 01 - 05:</span> Wireframing B2B y Arquitectura de Datos.</li>
+              <li><span class="text-[#D4AF37] font-bold">Día 06 - 15:</span> Setup Next.js, React 19 y maquetación Jigsaw.</li>
+              <li><span class="text-[#D4AF37] font-bold">Día 16 - 25:</span> Estructuración de Catálogos 3D interactivos con Tailwind.</li>
+              <li><span class="text-[#D4AF37] font-bold">Día 26 - 30:</span> Implementación de físicas y GSAP / Motion.</li>
+            </ul>
           </div>
-          <div class="mes-card bg-black/40 p-8 rounded-[2rem] border border-white/10 relative overflow-hidden tilt-card hover-trigger group">
-            <div class="text-[#D4AF37] font-black text-8xl absolute -top-4 -right-4 opacity-20 group-hover:scale-125 transition-transform">02</div>
-            <div class="tilt-content relative z-10">
-              <h3 class="text-2xl font-black font-cinzel mb-6 text-white">Mes 2: Backend</h3>
-              <ul class="text-xs text-stone-300 space-y-3 font-medium">
-                <li><span class="text-[#D4AF37] font-bold">Día 31-40:</span> Firebase DB.</li>
-                <li><span class="text-[#D4AF37] font-bold">Día 41-50:</span> Checkout Wpp.</li>
-                <li><span class="text-[#D4AF37] font-bold">Día 51-55:</span> Zustand Testing.</li>
-                <li><span class="text-white bg-black/50 px-1 font-bold">Día 56-60: Entrega.</span></li>
-              </ul>
-            </div>
+          
+          <div class="mes-card bg-black/40 p-8 rounded-[2rem] border border-white/10 relative overflow-hidden group hover:bg-black transition-colors">
+            <div class="text-[#D4AF37] font-black text-8xl absolute -top-4 -right-4 opacity-20">02</div>
+            <h3 class="text-2xl font-black font-cinzel mb-6 relative z-10 text-white">Mes 2: Backend & Base de Datos</h3>
+            <ul class="text-xs text-stone-300 relative z-10 space-y-3 font-medium">
+              <li><span class="text-[#D4AF37] font-bold">Día 31 - 40:</span> Integración de Google Firebase (Firestore Database y Reglas de Seguridad).</li>
+              <li><span class="text-[#D4AF37] font-bold">Día 41 - 50:</span> Desarrollo de Checkout (Recolección de datos y Link a WhatsApp).</li>
+              <li><span class="text-[#D4AF37] font-bold">Día 51 - 55:</span> Conexión de estados con Zustand y testing interno.</li>
+              <li><span class="text-[#D4AF37] font-bold">Día 56 - 60:</span> <span class="text-white bg-black/50 px-1">Entrega Oficial del Software.</span></li>
+            </ul>
           </div>
-          <div class="mes-card bg-[#120F0D] p-8 rounded-[2rem] border border-[#D4AF37]/50 relative overflow-hidden shadow-2xl scale-105 tilt-card hover-trigger group">
-            <div class="text-[#D4AF37] font-black text-8xl absolute -top-4 -right-4 opacity-10 group-hover:scale-125 transition-transform">03</div>
-            <div class="tilt-content relative z-10">
-              <h3 class="text-2xl font-black font-cinzel mb-6 text-[#D4AF37]">Mes 3: Beta</h3>
-              <ul class="text-xs text-stone-300 space-y-3 font-medium">
-                <li><span class="text-[#D4AF37] font-bold">Día 61-90:</span> Liberación HORECA.</li>
-                <li>Monitoreo en Firebase.</li>
-                <li>Corrección ágil de usabilidad.</li>
-              </ul>
-            </div>
+          
+          <div class="mes-card bg-[#120F0D] p-8 rounded-[2rem] border border-[#D4AF37]/50 relative overflow-hidden shadow-2xl scale-105">
+            <div class="text-[#D4AF37] font-black text-8xl absolute -top-4 -right-4 opacity-10">03</div>
+            <h3 class="text-2xl font-black font-cinzel mb-6 relative z-10 text-[#D4AF37]">Mes 3: Pruebas Beta y Soporte</h3>
+            <ul class="text-xs text-stone-300 relative z-10 space-y-3 font-medium">
+              <li><span class="text-[#D4AF37] font-bold">Día 61 - 90:</span> Liberación en vivo a clientes HORECA reales.</li>
+              <li class="mt-4 border-t border-white/10 pt-4 text-white">Monitoreo activo de servidores en Firebase.</li>
+              <li class="text-white">Asistencia a usuarios y corrección ágil de usabilidad.</li>
+              <li class="text-white">Preparación de base para futura pasarela de pagos.</li>
+            </ul>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- METODOS DE PAGO -->
-    <section class="py-32 px-4 sm:px-6 relative z-40 bg-[#070605] text-white border-t border-white/10 overflow-hidden">
+<!-- METODOS DE PAGO -->
+    <section id="seccion-pagos" class="py-32 px-4 sm:px-6 relative z-40 bg-[#070605] text-white border-t border-white/10 overflow-hidden">
       <div class="max-w-7xl mx-auto text-center">
-        <h2 class="text-[6vw] md:text-[4vw] leading-[0.85] font-black tracking-tighter uppercase mb-4 text-white split-text">FLEXIBILIDAD FINANCIERA</h2>
-        <p class="text-stone-400 mb-16 max-w-2xl mx-auto fade-up">Tres modalidades de pago disponibles para los $2.500.000 COP.</p>
+        <h2 class="text-[6vw] md:text-[4vw] leading-[0.85] font-black tracking-tighter uppercase mb-4 text-white"><span id="pagos-title" class="block">FLEXIBILIDAD FINANCIERA</span></h2>
+        <p class="text-stone-400 mb-16 max-w-2xl mx-auto">Tú eliges cómo apalancar este proyecto. Tres modalidades de pago disponibles para los $2.500.000 COP.</p>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left list-stagger-3">
-          <div class="pago-card bg-[#120F0D] p-8 rounded-2xl border border-white/10 flex flex-col tilt-card hover-trigger">
-            <div class="tilt-content h-full flex flex-col">
-              <span class="text-[#10B981] font-bold text-xs tracking-widest uppercase mb-4">Opción 1</span>
-              <h4 class="text-3xl font-black mb-4">De Contado</h4>
-              <p class="text-sm text-stone-400 mb-8">Pago único al iniciar. Prioridad máxima en cola de desarrollo.</p>
-              <div class="mt-auto text-2xl font-black text-[#D4AF37]">1x $2.5M</div>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+          <div class="pago-card bg-[#120F0D] p-8 rounded-2xl border border-white/10 flex flex-col">
+            <span class="text-[#10B981] font-bold text-xs tracking-widest uppercase mb-4">Opción 1</span>
+            <h4 class="text-3xl font-black mb-4">De Contado</h4>
+            <p class="text-sm text-stone-400 mb-8">Pago único del 100% al iniciar el proyecto. Prioridad máxima en cola de desarrollo.</p>
+            <div class="mt-auto text-2xl font-black text-[#D4AF37]">1x $2.500.000</div>
           </div>
           
-          <div class="pago-card bg-[#120F0D] p-8 rounded-2xl border border-white/10 flex flex-col tilt-card hover-trigger">
-            <div class="tilt-content h-full flex flex-col">
-              <span class="text-[#10B981] font-bold text-xs tracking-widest uppercase mb-4">Opción 2</span>
-              <h4 class="text-3xl font-black mb-4">3 Cuotas</h4>
-              <p class="text-sm text-stone-400 mb-8">Mes 1, Mes 2, y la última al finalizar el Mes 3 (Pruebas).</p>
-              <div class="mt-auto text-2xl font-black text-[#D4AF37]">3x $833k</div>
-            </div>
+          <div class="pago-card bg-[#120F0D] p-8 rounded-2xl border border-white/10 flex flex-col">
+            <span class="text-[#10B981] font-bold text-xs tracking-widest uppercase mb-4">Opción 2</span>
+            <h4 class="text-3xl font-black mb-4">3 Cuotas</h4>
+            <p class="text-sm text-stone-400 mb-8">Una cuota por mes de desarrollo. Mes 1, Mes 2, y la última al finalizar el Mes 3 (Fase de Pruebas).</p>
+            <div class="mt-auto text-2xl font-black text-[#D4AF37]">3x $833.333</div>
           </div>
           
-          <div class="pago-card bg-[#1A1613] p-8 rounded-2xl border border-[#D4AF37] flex flex-col relative shadow-[0_0_40px_rgba(212,175,55,0.15)] tilt-card hover-trigger overflow-hidden group">
-            <div class="absolute inset-0 bg-gradient-to-t from-[#D4AF37]/20 to-transparent translate-y-[100%] group-hover:translate-y-0 transition-transform duration-700"></div>
-            <div class="tilt-content relative z-10 h-full flex flex-col">
-              <div class="absolute -top-8 -right-8 bg-[#D4AF37] text-black text-[10px] font-bold px-3 py-1 rounded-bl-lg">Recomendado</div>
-              <span class="text-[#D4AF37] font-bold text-xs tracking-widest uppercase mb-4 mt-4">Opción 3</span>
-              <h4 class="text-3xl font-black mb-4">40% / 60%</h4>
-              <p class="text-sm text-stone-400 mb-8">40% inicial para arrancar. 60% al finalizar el Mes 2 (Entrega).</p>
-              <div class="mt-auto">
-                <div class="text-lg font-bold text-stone-300">Inicia: $1.000.000</div>
-                <div class="text-lg font-bold text-[#D4AF37]">Fin Mes 2: $1.500.000</div>
-              </div>
+          <div class="pago-card bg-[#1A1613] p-8 rounded-2xl border border-[#D4AF37] flex flex-col relative overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.15)]">
+            <div class="absolute top-0 right-0 bg-[#D4AF37] text-black text-[10px] font-bold px-3 py-1 rounded-bl-lg">Recomendado</div>
+            <span class="text-[#D4AF37] font-bold text-xs tracking-widest uppercase mb-4">Opción 3</span>
+            <h4 class="text-3xl font-black mb-4">40% / 60%</h4>
+            <p class="text-sm text-stone-400 mb-8">40% inicial para arrancar diseño. 60% al finalizar el Mes 2 (Entrega del proyecto, antes de entrar a Beta).</p>
+            <div class="mt-auto">
+              <div class="text-lg font-bold text-stone-300">Inicia: $1.000.000</div>
+              <div class="text-lg font-bold text-stone-300">Entrega: $1.500.000</div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CTA WHATSAPP -->
-    <section id="seccion-cta" class="py-32 text-center px-4 relative z-40 bg-gradient-to-t from-[#120F0D] to-[#070605] border-t border-white/10 overflow-hidden">
-       <div class="absolute inset-0 bg-[url('assets/img/hero-patacones.webp')] opacity-5 bg-cover bg-center parallax-bg"></div>
-       <h2 class="text-4xl md:text-6xl font-black text-white mb-12 relative z-10 split-text font-cinzel">¿LISTO PARA ESCALAR<br><span class="text-[#D4AF37]">CASA TRADICIÓN?</span></h2>
-       <a href="https://wa.me/573017505981?text=Hola%20equipo%20Meta%20Level,%20estoy%20preparado,%20vamos%20a%20empezar%20con%20el%20proyecto." target="_blank" class="hover-trigger relative z-10 inline-block bg-[#10B981] text-black font-black uppercase tracking-widest text-sm md:text-xl px-16 py-8 rounded-full hover:scale-110 hover:bg-white transition-all shadow-[0_0_60px_rgba(16,185,129,0.5)]">
+    <!-- CTA WHATSAPP META LEVEL -->
+    <section id="seccion-cta" class="py-24 text-center px-4 relative z-40 bg-gradient-to-t from-[#120F0D] to-[#070605] border-t border-white/10 overflow-hidden">
+       <h2 class="text-3xl md:text-5xl font-black text-white mb-8"><div id="cta-title">¿LISTO PARA ESCALAR<br><span class="text-[#D4AF37]">CASA TRADICIÓN?</span></div></h2>
+       <a href="https://wa.me/573017505981?text=Hola%20equipo%20Meta%20Level,%20estoy%20preparado,%20vamos%20a%20empezar%20con%20el%20proyecto." target="_blank" class="inline-block bg-[#10B981] text-black font-black uppercase tracking-widest text-sm md:text-lg px-12 py-6 rounded-full hover:scale-105 hover:bg-white transition-all shadow-[0_0_40px_rgba(16,185,129,0.4)]">
           Estoy Preparado. Empecemos.
        </a>
     </section>
 
+    <footer class="py-12 border-t border-white/10 text-center text-stone-600 text-xs bg-[#120F0D]">
+      Propuesta Comercial Meta Level para Casa Tradición. <br> $2.500.000 COP.
+    </footer>
   </main>
 
-  <!-- MODAL 3D -->
+  <!-- MODAL 3D EXPANSION (Lightbox) -->
   <div id="product-modal" class="fixed inset-0 z-50 pointer-events-none flex items-center justify-center p-4">
     <div id="modal-bg" class="absolute inset-0 bg-black/95 backdrop-blur-xl opacity-0 transition-opacity duration-500"></div>
     <div id="modal-content" class="relative w-full max-w-5xl bg-black rounded-3xl border border-[#D4AF37]/30 flex flex-col md:flex-row overflow-hidden opacity-0 shadow-[0_0_80px_rgba(212,175,55,0.15)] origin-center">
+      
+      <!-- Video Simulado (Ken Burns) -->
       <div class="w-full md:w-[55%] h-64 md:h-[550px] overflow-hidden relative border-r border-white/10">
+        <!-- El CSS animate-kenburns simula el movimiento de video paneando y escalando -->
         <img id="modal-img" src="" class="w-[110%] h-[110%] object-cover animate-kenburns origin-center absolute -top-[5%] -left-[5%]">
         <div class="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)]"></div>
+        <div class="absolute top-4 left-4 bg-red-600 text-white text-[9px] font-black uppercase px-2 py-1 rounded flex items-center gap-2">
+          <div class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div> EN VIVO
+        </div>
       </div>
+      
+      <!-- Textos -->
       <div class="w-full md:w-[45%] p-8 md:p-12 flex flex-col justify-center bg-gradient-to-br from-[#120F0D] to-[#070605]">
-        <button onclick="closeProductModal()" class="hover-trigger absolute top-6 right-6 text-stone-400 hover:text-white font-bold text-3xl z-10 transition-colors">&times;</button>
+        <button onclick="closeProductModal()" class="absolute top-6 right-6 text-stone-400 hover:text-white font-bold text-3xl z-10 transition-colors">&times;</button>
+        <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-widest mb-3 border-l-2 border-[#D4AF37] pl-3" id="modal-cat">Alta Cocina</span>
         <h3 class="text-4xl font-black text-white mb-4 leading-tight font-cinzel" id="modal-title">Título</h3>
         <p class="text-stone-400 text-sm mb-8 leading-relaxed" id="modal-desc">Descripción...</p>
         <div class="mt-auto">
-          <div class="text-4xl font-black text-[#D4AF37] mb-6" id="modal-price">$0</div>
-          <button onclick="closeProductModal()" class="hover-trigger w-full bg-[#D4AF37] text-black font-black uppercase tracking-widest py-5 rounded-xl hover:bg-white hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+          <div class="text-4xl font-black text-white mb-6" id="modal-price">$0</div>
+          <button onclick="closeProductModal()" class="w-full bg-[#D4AF37] text-black font-black uppercase tracking-widest py-5 rounded-xl hover:bg-white hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)]">
             Añadir a la Orden
           </button>
         </div>
@@ -363,133 +385,45 @@
   </div>
 
   <script>
-    // JS Logic (Lenis, SplitText, GSAP, 3D Hover)
-    
-    // 1. SPLIT TEXT FUNCTION
-    function wrapText() {
-      document.querySelectorAll('.split-text, .split-text-hero').forEach(el => {
-        let text = el.innerHTML;
-        // Split by lines (<br>) first
-        let lines = text.split(/<br\s*\/?>/i);
-        let newHtml = lines.map(line => {
-           // Split by spaces, avoiding HTML tags inside words
-           let words = line.split(" ");
-           return words.map(w => `<span class="word"><span class="word-inner">${w}</span></span>`).join(" ");
-        }).join("<br>");
-        el.innerHTML = newHtml;
-      });
-    }
-
-    // Initialize all logic when DOM is ready
-    document.addEventListener("DOMContentLoaded", () => {
-      wrapText();
-      
-      gsap.registerPlugin(ScrollTrigger);
-
-      // 2. LENIS SMOOTH SCROLL (Elite Feeling)
-      const lenis = new Lenis({ duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-      function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-      requestAnimationFrame(raf);
-
-      // 3. CUSTOM BLEND CURSOR
-      if(window.matchMedia("(pointer: fine)").matches) {
-        const cursor = document.getElementById('custom-cursor');
-        let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
-        let curX = mouseX, curY = mouseY;
-        window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
-        gsap.ticker.add(() => {
-          curX += (mouseX - curX) * 0.15; curY += (mouseY - curY) * 0.15;
-          gsap.set(cursor, { x: curX, y: curY });
-        });
-        document.querySelectorAll('.hover-trigger, button, a').forEach(el => {
-          el.addEventListener('mouseenter', () => cursor.classList.add('cursor-grow'));
-          el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-grow'));
-        });
-      }
-
-      // 4. 3D MAGNETIC HOVER (Vanilla Tilt Logic)
-      document.querySelectorAll('.tilt-card').forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left; const y = e.clientY - rect.top;
-          const xPct = (x / rect.width - 0.5) * 2; const yPct = (y / rect.height - 0.5) * 2;
-          gsap.to(card, { rotationY: xPct * 12, rotationX: -yPct * 12, transformPerspective: 1000, ease: "power2.out", duration: 0.5 });
-        });
-        card.addEventListener('mouseleave', () => {
-          gsap.to(card, { rotationY: 0, rotationX: 0, ease: "power2.out", duration: 0.7 });
-        });
-      });
-
-      // 5. GSAP SCROLL ANIMATIONS (Z-Axis + Subsections)
-      
-      // Z-Axis Sequence
-      const tl = gsap.timeline({ scrollTrigger: { trigger: "#z-sequence", start: "top top", end: "+=400%", scrub: 1, pin: true }});
-      
-      // Hero text split intro
-      gsap.from(".split-text-hero .word-inner", { y: "150%", duration: 1.5, stagger: 0.1, ease: "power4.out" });
-
-      tl.to("#hero-bento", { scale: 35, opacity: 0, filter: "blur(20px)", duration: 2.5, ease: "power2.inOut" }, 0)
-        .to("#hero-layer", { opacity: 0, duration: 1.5, ease: "power2.inOut" }, 0.5);
-
-      tl.from(".red-text-1", { y: -150, opacity: 0, duration: 1, ease: "power2.out" }, 1)
-        .from(".red-text-2", { y: 150, opacity: 0, duration: 1, ease: "power2.out" }, 1);
-      tl.to("#red-section", { scale: 25, opacity: 0, duration: 2.5, ease: "power2.inOut" }, "+=0.5");
-
-      tl.from(".gold-text-1", { x: -200, opacity: 0, duration: 1, ease: "power2.out" }, "-=1.5")
-        .from(".gold-text-2", { x: 200, opacity: 0, duration: 1, ease: "power2.out" }, "<");
-      tl.to("#gold-section", { scale: 25, opacity: 0, duration: 2.5, ease: "power2.inOut" }, "+=0.5");
-
-      // Price reveal (Masking text)
-      tl.to("#black-section", { opacity: 1, scale: 1, duration: 1.5, ease: "power2.out" }, "-=1.5");
-      tl.from("#black-section .word-inner", { y: "120%", duration: 1, stagger: 0.05, ease: "power3.out" }, "-=1");
-
-      // General Text Reveals
-      gsap.utils.toArray('.section-header .word-inner').forEach(w => {
-        gsap.from(w, { scrollTrigger: { trigger: w, start: "top 90%" }, y: "120%", duration: 1, ease: "power4.out" });
-      });
-      gsap.utils.toArray('.split-text:not(.split-text-hero)').forEach(st => {
-        gsap.from(st.querySelectorAll('.word-inner'), { scrollTrigger: { trigger: st, start: "top 90%" }, y: "120%", duration: 0.8, stagger: 0.05, ease: "power3.out" });
-      });
-
-      // Fades & Scales
-      gsap.utils.toArray('.fade-up').forEach(el => gsap.from(el, { scrollTrigger: { trigger: el, start: "top 90%" }, y: 50, opacity: 0, duration: 1, ease: "power3.out" }));
-      gsap.utils.toArray('.fade-scale').forEach(el => gsap.from(el, { scrollTrigger: { trigger: el, start: "top 90%" }, scale: 0.9, opacity: 0, duration: 1, ease: "back.out(1.5)" }));
-
-      // Staggers
-      gsap.from(".list-stagger-1 .tilt-card", { scrollTrigger: { trigger: ".list-stagger-1", start: "top 80%" }, x: 100, opacity: 0, duration: 1, stagger: 0.2, ease: "back.out(1.2)" });
-      gsap.from(".tech-card", { scrollTrigger: { trigger: ".tech-card", start: "top 85%" }, scale: 0.8, opacity: 0, duration: 1, ease: "back.out(1.5)" });
-      gsap.from(".list-stagger-2 .tilt-card", { scrollTrigger: { trigger: ".list-stagger-2", start: "top 80%" }, y: 150, opacity: 0, rotationY: 25, duration: 1, stagger: 0.15, ease: "power3.out" });
-      gsap.from(".list-stagger-3 .tilt-card", { scrollTrigger: { trigger: ".list-stagger-3", start: "top 80%" }, scale: 0.5, opacity: 0, duration: 0.8, stagger: 0.15, ease: "back.out(1.7)" });
-
-      // Parallax BGs
-      gsap.to("#red-bg-img", { yPercent: 20, ease: "none", scrollTrigger: { trigger: "#red-section", scrub: true } });
-      gsap.to(".parallax-bg", { yPercent: 30, ease: "none", scrollTrigger: { trigger: "#seccion-cta", scrub: true } });
-    });
-
-    // DEMO DATA 
+    // DEMO DATA (Con precios falsos para el modal)
     const demoData = [
-      { name: 'Plátano Entero', pack: 'assets/p/img-006.webp', dish: 'assets/p/img-007.webp', price: '$22.500', desc: 'Maduración natural con dulzura óptima.' },
-      { name: 'Tostón Jumbo', pack: 'assets/p/img-035.webp', dish: 'assets/p/img-036.webp', price: '$45.000', desc: 'Formato gigante para compartir.' },
-      { name: 'Yuca Astilla', pack: 'assets/p/img-008.webp', dish: 'assets/p/img-009.webp', price: '$38.000', desc: 'Textura suave por dentro y crocante por fuera.' },
-      { name: 'Patacón Prelisto', pack: 'assets/p/img-017.webp', dish: 'assets/p/img-018.webp', price: '$32.000', desc: 'Ahorra 40% en mermas de cocina.' }
+      { name: 'Plátano Maduro Entero', cant: '3 unds', pack: 'assets/p/img-006.webp', dish: 'assets/p/img-007.webp', price: '$22.500', desc: 'Maduración natural con dulzura óptima. Ideal para hornear o freír.' },
+      { name: 'Tostón Jumbo 28cm', cant: '10 unds', pack: 'assets/p/img-035.webp', dish: 'assets/p/img-036.webp', price: '$45.000', desc: 'Formato gigante para compartir. Prefrito y ultracongelado para conservar crocancia.' },
+      { name: 'Yuca Astilla', cant: '5kg', pack: 'assets/p/img-008.webp', dish: 'assets/p/img-009.webp', price: '$38.000', desc: 'Pelada, desvenada y lista para la olla. Textura suave por dentro y crocante por fuera.' },
+      { name: 'Patacón Verde Prelisto', cant: '2.5kg', pack: 'assets/p/img-017.webp', dish: 'assets/p/img-018.webp', price: '$32.000', desc: 'Ahorra 40% en mermas de cocina. Formato estándar para acompañamientos rápidos.' }
     ];
 
+    // Build the grid
     document.getElementById('showroom-grid').innerHTML = demoData.map((p, idx) => `
-      <div class="bg-black p-4 flex flex-col group rounded-2xl border border-white/5 relative tilt-card hover-trigger" id="card-${idx}">
-        <div class="flip-card-3d rounded-xl aspect-[4/3] mb-4 cursor-pointer tilt-content" onclick="openProductModal(${idx}, this)">
+      <div class="bg-black p-4 flex flex-col group rounded-2xl border border-white/5 relative" id="card-${idx}">
+        <div class="flip-card-3d rounded-xl aspect-[4/3] mb-4 cursor-pointer" onclick="openProductModal(${idx}, this)">
           <div class="flip-card-inner">
-            <div class="flip-card-front"><img src="${p.dish}"><div class="absolute inset-0 bg-black/40"></div><span class="absolute bottom-2 left-2 text-[10px] font-bold bg-[#D4AF37] text-black px-2 py-1 rounded shadow-lg">Click para 3D (Ver Empaque)</span></div>
-            <div class="flip-card-back"><img src="${p.pack}"></div>
+            <div class="flip-card-front">
+              <img src="${p.dish}" loading="lazy">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
+              <span class="absolute bottom-2 left-2 text-[10px] font-bold bg-black/80 text-[#D4AF37] px-2 py-1 rounded">Plato Servido</span>
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+                <span class="bg-[#D4AF37] text-black text-[10px] font-black uppercase px-4 py-2 rounded-full shadow-lg flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg> Ver Interacción
+                </span>
+              </div>
+            </div>
+            <div class="flip-card-back">
+              <img src="${p.pack}" loading="lazy">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
+              <span class="absolute bottom-2 left-2 text-[10px] font-bold bg-black/80 text-[#D4AF37] px-2 py-1 rounded">Empaque Vacío</span>
+            </div>
           </div>
         </div>
-        <h4 class="text-sm font-bold text-white mb-1 tilt-content">${p.name}</h4>
+        <h4 class="text-sm font-bold text-white mb-1">${p.name}</h4>
       </div>
     `).join('');
 
+    // Modal Logic (3D Rotation & Expand)
     function openProductModal(idx, cardElement) {
       const p = demoData[idx];
-      document.getElementById('modal-img').src = p.dish; 
-      document.getElementById('modal-title').innerHTML = `<span class="word"><span class="word-inner">${p.name}</span></span>`;
+      document.getElementById('modal-img').src = p.dish; // Uses the dish image for the "video" effect
+      document.getElementById('modal-title').textContent = p.name;
       document.getElementById('modal-desc').textContent = p.desc;
       document.getElementById('modal-price').textContent = p.price;
       
@@ -498,45 +432,141 @@
       const content = document.getElementById('modal-content');
       
       modal.classList.remove('pointer-events-none');
-      gsap.to(bg, { opacity: 1, duration: 0.5 });
+      bg.classList.add('opacity-100');
+      bg.classList.remove('opacity-0');
       
+      // Calculate start coordinates for the expansion
       const rect = cardElement.getBoundingClientRect();
       const startX = rect.left + rect.width / 2 - window.innerWidth / 2;
       const startY = rect.top + rect.height / 2 - window.innerHeight / 2;
       
+      // GSAP animate from the card to center, flipping on Y axis
       gsap.fromTo(content, 
         { x: startX, y: startY, scale: 0.1, rotationY: -180, opacity: 0 },
         { x: 0, y: 0, scale: 1, rotationY: 0, opacity: 1, duration: 1.2, ease: "power3.out" }
       );
-      // Re-trigger text reveal inside modal
-      gsap.from("#modal-title .word-inner", { y: "120%", duration: 0.8, delay: 0.3, ease: "power3.out" });
     }
 
     function closeProductModal() {
-      gsap.to('#modal-content', { scale: 0.8, opacity: 0, duration: 0.4, ease: "power2.in" });
-      gsap.to('#modal-bg', { opacity: 0, duration: 0.4, delay: 0.1 });
-      setTimeout(() => document.getElementById('product-modal').classList.add('pointer-events-none'), 500);
+      const bg = document.getElementById('modal-bg');
+      const content = document.getElementById('modal-content');
+      
+      gsap.to(content, { scale: 0.8, opacity: 0, duration: 0.4, ease: "power2.in" });
+      bg.classList.remove('opacity-100');
+      bg.classList.add('opacity-0');
+      
+      setTimeout(() => {
+        document.getElementById('product-modal').classList.add('pointer-events-none');
+      }, 500);
     }
 
+    // Referral System Logic (With GSAP Animations)
     function toggleReferral(isReferred) {
-      const btnRef = document.getElementById('ref-btn-ref'), btnStd = document.getElementById('ref-btn-std');
-      const oldP = document.getElementById('price-old'), curP = document.getElementById('price-current');
+      const btnRef = document.getElementById('ref-btn-ref');
+      const btnStd = document.getElementById('ref-btn-std');
+      const oldPrice = document.getElementById('price-old');
+      const curPrice = document.getElementById('price-current');
+      const extraFeat = document.getElementById('ref-extra-feat');
+      const badge = document.getElementById('ref-badge');
+
       if(isReferred) {
         btnStd.className = 'px-6 py-2 rounded-full text-xs font-bold text-stone-400 hover:text-white transition-all';
         btnRef.className = 'px-6 py-2 rounded-full text-xs font-bold bg-[#D4AF37] text-black transition-all shadow-[0_0_15px_rgba(212,175,55,0.4)]';
-        oldP.classList.remove('hidden'); curP.textContent = '$75.000'; curP.classList.remove('text-[#D4AF37]'); curP.classList.add('text-[#10B981]');
-        document.getElementById('ref-extra-feat').classList.remove('opacity-30', 'grayscale');
-        document.getElementById('ref-badge').classList.remove('hidden');
-        gsap.fromTo(curP, { scale: 1.5 }, { scale: 1, duration: 0.6, ease: "back.out(2)" });
+        
+        oldPrice.classList.remove('hidden');
+        curPrice.textContent = '$75.000';
+        curPrice.classList.remove('text-[#D4AF37]');
+        curPrice.classList.add('text-[#10B981]');
+        
+        extraFeat.classList.remove('opacity-30', 'grayscale');
+        badge.classList.remove('hidden');
+
+        // Bouncy animations for the price and button
+        gsap.fromTo(curPrice, { scale: 1.5 }, { scale: 1, duration: 0.6, ease: "back.out(2)" });
+        gsap.fromTo(btnRef, { scale: 0.9 }, { scale: 1, duration: 0.4, ease: "back.out(2)" });
+        gsap.fromTo(badge, { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "back.out(1.5)" });
+
       } else {
         btnRef.className = 'px-6 py-2 rounded-full text-xs font-bold text-stone-400 hover:text-white transition-all';
         btnStd.className = 'px-6 py-2 rounded-full text-xs font-bold bg-[#D4AF37] text-black transition-all';
-        oldP.classList.add('hidden'); curP.textContent = '$150.000'; curP.classList.remove('text-[#10B981]'); curP.classList.add('text-[#D4AF37]');
-        document.getElementById('ref-extra-feat').classList.add('opacity-30', 'grayscale');
-        document.getElementById('ref-badge').classList.add('hidden');
-        gsap.fromTo(curP, { scale: 1.5 }, { scale: 1, duration: 0.6, ease: "back.out(2)" });
+        
+        oldPrice.classList.add('hidden');
+        curPrice.textContent = '$150.000';
+        curPrice.classList.remove('text-[#10B981]');
+        curPrice.classList.add('text-[#D4AF37]');
+        
+        extraFeat.classList.add('opacity-30', 'grayscale');
+        badge.classList.add('hidden');
+
+        gsap.fromTo(curPrice, { scale: 1.5 }, { scale: 1, duration: 0.6, ease: "back.out(2)" });
       }
     }
+
+    // GSAP Z-AXIS ABSORB ANIMATION
+    document.addEventListener("DOMContentLoaded", () => {
+      gsap.registerPlugin(ScrollTrigger);
+
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: "#z-sequence", start: "top top", end: "+=400%", scrub: 1, pin: true }
+      });
+
+      tl.to("#hero-bento", { scale: 35, opacity: 0, duration: 2.5, ease: "power2.inOut" }, 0)
+        .to("#hero-layer", { opacity: 0, duration: 1.5, ease: "power2.inOut" }, 0.5);
+
+      tl.from(".red-text-1", { y: -100, opacity: 0, duration: 1, ease: "power2.out" }, 1)
+        .from(".red-text-2", { y: 100, opacity: 0, duration: 1, ease: "power2.out" }, 1);
+      tl.to("#red-section", { scale: 25, opacity: 0, duration: 2.5, ease: "power2.inOut" }, "+=0.5");
+
+      tl.from(".gold-text-1", { x: -150, opacity: 0, duration: 1, ease: "power2.out" }, "-=1.5")
+        .from(".gold-text-2", { x: 150, opacity: 0, duration: 1, ease: "power2.out" }, "<");
+      tl.to("#gold-section", { scale: 25, opacity: 0, duration: 2.5, ease: "power2.inOut" }, "+=0.5");
+
+      tl.to("#black-section", { opacity: 1, scale: 1, duration: 1.5, ease: "power2.out" }, "-=1.5");
+
+      // --- ANIMACIONES SECCIONES COMERCIALES ---
+      
+      // Alcance
+      gsap.from("#alcance-title", {
+        scrollTrigger: { trigger: "#seccion-alcance", start: "top 70%" },
+        scale: 4, opacity: 0, duration: 1.2, ease: "power4.out"
+      });
+      gsap.from(".alcance-card", {
+        scrollTrigger: { trigger: "#seccion-alcance", start: "top 60%" },
+        x: 200, opacity: 0, duration: 1, stagger: 0.2, ease: "back.out(1.5)"
+      });
+
+      // Cronograma (Roadmap)
+      gsap.from("#roadmap-title", {
+        scrollTrigger: { trigger: "#seccion-cronograma", start: "top 75%" },
+        y: 100, opacity: 0, duration: 1, ease: "power4.out"
+      });
+      
+      gsap.from(".tech-card", {
+        scrollTrigger: { trigger: "#seccion-cronograma", start: "top 75%" },
+        scale: 0.8, opacity: 0, duration: 1, ease: "back.out(1.5)"
+      });
+      gsap.from(".mes-card", {
+        scrollTrigger: { trigger: "#seccion-cronograma", start: "top 60%" },
+        y: 150, opacity: 0, rotationY: 45, duration: 1, stagger: 0.2, ease: "back.out(1.2)"
+      });
+
+      // Pagos
+      gsap.from("#pagos-title", {
+        scrollTrigger: { trigger: "#seccion-pagos", start: "top 80%" },
+        scale: 0.5, opacity: 0, duration: 1, ease: "back.out(2)"
+      });
+      gsap.from(".pago-card", {
+        scrollTrigger: { trigger: "#seccion-pagos", start: "top 65%" },
+        scale: 0, opacity: 0, duration: 0.8, stagger: 0.2, ease: "back.out(1.5)"
+      });
+
+      // CTA Final
+      gsap.from("#cta-title", {
+        scrollTrigger: { trigger: "#seccion-cta", start: "top 85%" },
+        scale: 1.5, opacity: 0, duration: 1.5, ease: "power3.out"
+      });
+
+    });
   </script>
 </body>
 </html>
