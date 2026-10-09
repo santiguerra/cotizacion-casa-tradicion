@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth bg-[#070605] text-[#EDE8E1]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casa Tradición — Propuesta Comercial & Experiencia Web Interactiva ($2.500.000 COP)</title>
+
+  <!-- Preconnect & Preload Tipografía y Recursos Críticos -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" href="assets/logo_casa_tradicion.png">
+  <link rel="preload" as="image" href="assets/products/img-012.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+
+  <!-- GSAP 3, ScrollTrigger & Canvas Confetti (Ligeros y en CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
+
+  <style>
+    :root {
+      --bg-dark: #070605;
+      --bg-card: #12100E;
+      --bg-surface: #181512;
+      --gold-primary: #D4AF37;
+      --gold-light: #FBF0B9;
+      --gold-deep: #8C5E16;
+      --terracotta: #A84A2E;
+      --green-leaf: #1F4D25;
+      --green-emerald: #10B981;
+      --border-gold: rgba(212, 175, 55, 0.25);
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #EDE8E1;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    .font-cinzel { font-family: 'Cinzel', Georgia, serif; }
+    .font-editorial { font-family: 'Playfair Display', Georgia, serif; }
+
+    /* Canvas de Fondo Vivo de Alto Rendimiento (0 DOM overhead, GPU puro) */
+    #ambient-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      transform: translateZ(0);
+    }
+
+    /* Textura de Grano Analógico Sutil (Elimina banding y da acabado artesanal de papel/ladrillo) */
+    .film-grain {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.038;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Brillo Tipográfico de Oro Líquido */
+    .text-gold-shimmer {
+      background: linear-gradient(135deg, #FFFDF5 0%, #E8BC45 35%, #9E7412 75%, #F7E49E 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Chasis de Doble Bezel Ultra-Optimizado (Sin backdrop-blur en bucles repetidos) */
+    .bezel-chassis {
+      background: linear-gradient(145deg, rgba(24, 21, 18, 0.94) 0%, rgba(14, 12, 10, 0.98) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.22);
+      border-radius: 1.5rem;
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+      transform: translateZ(0);
+    }
+    .bezel-chassis:hover {
+      border-color: rgba(212, 175, 55, 0.55);
+      box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.85), 0 0 24px rgba(212, 175, 55, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+    }
+
+    /* Botón Magnético con Ícono Anidado */
+    .btn-luxury-magnetic {
+      background: linear-gradient(135deg, #FDE68A 0%, #D4AF37 40%, #A17514 100%);
+      color: #070605;
+      font-weight: 800;
+      border-radius: 9999px;
+      padding: 0.85rem 1.65rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.85rem;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+      box-shadow: 0 10px 24px -5px rgba(212, 175, 55, 0.35);
+      transform: translateZ(0);
+    }
+    .btn-luxury-magnetic:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 16px 32px -5px rgba(212, 175, 55, 0.5);
+    }
+    .btn-luxury-magnetic .icon-bubble {
+      width: 1.85rem;
+      height: 1.85rem;
+      border-radius: 9999px;
+      background: rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s ease;
+    }
+    .btn-luxury-magnetic:hover .icon-bubble {
+      transform: translateX(3px);
+    }
+
+    /* 3D Card Flip Showroom con Render Hardware Optimizado */
+    .flip-card-3d {
+      perspective: 1200px;
+    }
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .flip-card-3d.is-flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 1.25rem;
+      overflow: hidden;
+    }
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Optimización de Renderizado: content-visibility en contenido pesado bajo el pliegue */
+    .deferred-render {
+      content-visibility: auto;
+      contain-intrinsic-size: auto 400px;
+    }
+
+    /* Cursor Magnético Ultraligero (Animado por Hardware RAF, Cero Lag) */
+    #custom-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 30px;
+      height: 30px;
+      border: 1.5px solid rgba(212, 175, 55, 0.7);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate3d(-100px, -100px, 0);
+      transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
+      will-change: transform;
+    }
+    #custom-cursor-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 6px;
+      background-color: #D4AF37;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate3d(-100px, -100px, 0);
+      will-change: transform;
+    }
+
+    /* Scrollbar de Lujo */
+    ::-webkit-scrollbar { width: 7px; }
+    ::-webkit-scrollbar-track { background: #070605; }
+    ::-webkit-scrollbar-thumb {
+      background: #D4AF37;
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: #FDE68A; }
+  </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-[#D4AF37] selection:text-black relative">
+
+  <!-- Canvas de Fondo Vivo de 60-120 FPS (Partículas & Orbes de Fuego y Selva) -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Película de Grano Analógico para Profundidad Háptica -->
+  <div class="film-grain"></div>
+
+  <!-- Cursor Magnético de Precisión -->
+  <div id="custom-cursor" class="hidden md:block"></div>
+  <div id="custom-cursor-dot" class="hidden md:block"></div>
+
+  <!-- Contenedor Principal por encima del Canvas -->
+  <div class="relative z-10 w-full overflow-x-hidden">
+
+    <!-- NAVEGACIÓN DE ISLA FLOTANTE DESACOPLADA (SOLO AQUÍ BACKDROP-BLUR) -->
+    <header class="sticky top-4 z-50 max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="bezel-chassis px-5 sm:px-6 py-3 flex items-center justify-between border border-[#D4AF37]/35 shadow-2xl backdrop-blur-xl bg-[#120F0D]/85">
+        
+        <!-- Logo Oficial Casa Tradición -->
+        <a href="#hero" class="flex items-center gap-3.5 group">
+          <div class="w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-[#FFF3D6] via-[#D4AF37] to-[#8C5E16] shadow-md group-hover:scale-105 transition-transform flex-shrink-0">
+            <div class="w-full h-full rounded-full bg-[#120F0D] flex items-center justify-center overflow-hidden border border-[#D4AF37]/40">
+              <img src="assets/logo_casa_tradicion.png" alt="Casa Tradición" class="w-9 h-9 object-contain" width="36" height="36" onerror="this.style.display='none'">
+            </div>
+          </div>
+          <div>
+            <span class="font-cinzel font-bold text-sm sm:text-base tracking-widest text-white block leading-tight">CASA TRADICIÓN</span>
+            <span class="text-[10px] sm:text-[11px] text-[#D4AF37] tracking-wider block font-semibold uppercase">Precocidos & Snacks HORECA</span>
+          </div>
+        </a>
+
+        <!-- Capítulos Ejecutivos -->
+        <nav class="hidden lg:flex items-center gap-1.5 text-xs font-semibold text-stone-300">
+          <a href="#vision" class="px-3.5 py-1.5 rounded-xl hover:text-white hover:bg-white/5 transition-all">Sede & Visión</a>
+          <a href="#catalogo" class="px-3.5 py-1.5 rounded-xl hover:text-[#D4AF37] hover:bg-white/5 transition-all">Catálogo 3D (25 Ref)</a>
+          <a href="#simulador" class="px-3.5 py-1.5 rounded-xl hover:text-white hover:bg-white/5 transition-all">Simulador HORECA</a>
+          <a href="#presupuesto" class="px-3.5 py-1.5 rounded-xl hover:text-[#D4AF37] hover:bg-white/5 transition-all">Inversión ($2.5M)</a>
+          <a href="#cronograma" class="px-3.5 py-1.5 rounded-xl hover:text-white hover:bg-white/5 transition-all">Cronograma</a>
+        </nav>
+
+        <!-- Acciones: Carrito Rápido y Aprobación -->
+        <div class="flex items-center gap-2.5 sm:gap-3">
+          <button onclick="toggleCartDrawer()" aria-label="Abrir pedido" class="relative p-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <span id="header-cart-count" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#D4AF37] text-black font-extrabold text-[10px] flex items-center justify-center">0</span>
+          </button>
+
+          <a href="#aprobacion" class="btn-luxury-magnetic text-xs py-2 px-4 sm:px-5">
+            <span>Aprobar Propuesta</span>
+            <span class="icon-bubble">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </span>
+          </a>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- SECCIÓN 1: HERO MONUMENTAL CON TIPOGRAFÍA ANCHA & MICRO-IMÁGENES INLINE -->
+    <section id="hero" class="relative pt-20 sm:pt-28 pb-28 sm:pb-36 px-4 sm:px-6 max-w-7xl mx-auto text-center">
+      
+      <!-- Micro-Badge Superior -->
+      <div class="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bezel-chassis border border-[#D4AF37]/40 mb-8 shadow-2xl">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Documento Comercial & Demostración Interactiva</span>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-white/10 text-stone-200 font-mono">Octubre 2026</span>
+      </div>
+
+      <!-- H1 Ultra Amplio con Micro-Imágenes Reales (Regla de Oro: máx 2 líneas) -->
+      <div class="max-w-6xl w-full mx-auto">
+        <h1 class="hero-line text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.12] text-white">
+          El Arte del Plátano
+          <!-- Micro-Imagen 1: Tajadas doradas -->
+          <span class="inline-block w-20 sm:w-28 h-10 sm:h-14 rounded-full overflow-hidden align-middle mx-1.5 sm:mx-2 border-2 border-[#D4AF37] shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform">
+            <img src="assets/products/img-012.png" alt="Tajada de Plátano" class="w-full h-full object-cover" width="112" height="56" fetchpriority="high">
+          </span>
+          Gourmet, Elevado con
+          <!-- Micro-Imagen 2: Cazuela de Sancocho -->
+          <span class="inline-block w-20 sm:w-28 h-10 sm:h-14 rounded-full overflow-hidden align-middle mx-1.5 sm:mx-2 border-2 border-emerald-500 shadow-2xl transform rotate-3 hover:rotate-0 transition-transform">
+            <img src="assets/products/img-003.png" alt="Sancocho Típico" class="w-full h-full object-cover" width="112" height="56" fetchpriority="high">
+          </span>
+          <br class="hidden sm:inline">
+          <span class="text-gold-shimmer font-cinzel">Alta Ingeniería Web</span>
+        </h1>
+      </div>
+
+      <!-- Subtítulo Estratégico -->
+      <p class="text-base sm:text-lg text-stone-300 font-normal max-w-3xl mx-auto mt-7 leading-relaxed">
+        Propuesta técnica y comercial para <strong class="text-white font-semibold">Casa Tradición</strong>: 
+        digitalización de las 25 referencias del brochure, simulador de ahorro en mermas para chefs, compras directas a WhatsApp y transferencias QR con <strong class="text-[#D4AF37]">0% de comisiones bancarias</strong>.
+      </p>
+
+      <!-- Caja Monumental de Inversión y Métricas Clave -->
+      <div class="mt-11 flex flex-col sm:flex-row items-center justify-center gap-6">
+        
+        <div class="bezel-chassis p-1.5 rounded-3xl border border-[#D4AF37]/50 shadow-2xl">
+          <div class="bg-[#120F0D] px-8 py-5 rounded-[22px] flex flex-col sm:flex-row items-center gap-8 border border-white/5">
+            <div class="text-left">
+              <span class="text-[12px] uppercase tracking-widest text-[#D4AF37] font-bold block">Inversión Llave en Mano</span>
+              <div class="flex items-baseline gap-2 mt-0.5">
+                <span class="text-4xl sm:text-5xl font-black text-white font-cinzel tracking-tight" id="hero-price-counter">$2.500.000</span>
+                <span class="text-sm font-bold text-[#D4AF37]">COP</span>
+              </div>
+            </div>
+            <div class="h-12 w-[1px] bg-white/10 hidden sm:block"></div>
+            <div class="text-left text-xs space-y-2 text-stone-300">
+              <div class="flex items-center gap-2 text-emerald-400 font-bold">
+                <span class="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px]">✓</span> 
+                <span>0% Comisiones por Pasarela</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-white/10 flex items-center justify-center text-[10px]">✓</span> 
+                <span>25 Referencias en Showroom 3D</span>
+              </div>
+              <div class="flex items-center gap-2 text-[#FBF0B9]">
+                <span class="w-4 h-4 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[10px]">✓</span> 
+                <span>4 Semanas de Desarrollo Ágil</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Acciones Principales -->
+      <div class="mt-9 flex flex-wrap items-center justify-center gap-4">
+        <a href="#catalogo" class="btn-luxury-magnetic text-xs py-3.5 px-8">
+          <span>Explorar Catálogo 3D</span>
+          <span class="icon-bubble">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </span>
+        </a>
+        <a href="#simulador" class="px-8 py-3.5 rounded-full bezel-chassis text-xs font-bold text-stone-200 hover:text-white border border-white/10 hover:border-[#D4AF37]/50 transition-all shadow-xl">
+          Probar Simulador de Ahorro HORECA
+        </a>
+      </div>
+
+    </section>
+
+    <!-- SECCIÓN 2: VISIÓN, FACHADA REAL & BENTO GRID DE VALOR -->
+    <section id="vision" class="py-24 sm:py-32 px-4 sm:px-6 max-w-7xl mx-auto border-t border-white/10 deferred-render">
+      
+      <div class="mb-14 text-center max-w-3xl mx-auto space-y-3">
+        <span class="text-xs font-bold uppercase tracking-widest text-[#D4AF37] bg-[#D4AF37]/10 px-4 py-1 rounded-full border border-[#D4AF37]/30">
+          Autenticidad & Eficiencia
+        </span>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white">
+          El Poder del Campo Colombiano en la Cocina Moderna
+        </h2>
+        <p class="text-sm text-stone-300">
+          La plataforma web no es un folleto digital: es un canal de ventas vivo que proyecta la identidad física de Casa Tradición y estandariza los pedidos de restaurantes de todo el país.
+        </p>
+      </div>
+
+      <!-- Gapless Bento Grid con grid-flow-dense -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 grid-flow-dense">
+        
+        <!-- Bento 1: Fachada Real de la Sede Física (Span 7) -->
+        <div class="md:col-span-7 bezel-chassis p-3 overflow-hidden group relative min-h-[380px] flex flex-col justify-end">
+          <div class="absolute inset-0 overflow-hidden rounded-2xl">
+            <img src="assets/fachada_casa_tradicion.jpg" alt="Fachada Casa Tradición" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent"></div>
+          </div>
+          <div class="relative z-10 p-6 space-y-2">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37] text-black text-[11px] font-black uppercase tracking-wider">
+              <span>Sede Física Oficial</span>
+            </div>
+            <h3 class="text-2xl font-bold text-white leading-tight">Tradición Artesanal & Alta Estandarización</h3>
+            <p class="text-xs text-stone-300 max-w-xl">
+              Ladrillos rústicos, exhibidores de congelación y arquitectura gastronómica. Diseñamos la web inspirada en los mismos materiales nobles de la tienda física.
+            </p>
+          </div>
+        </div>
+
+        <!-- Bento 2: Ahorro de Merma 38% (Span 5) -->
+        <div class="md:col-span-5 bezel-chassis p-7 flex flex-col justify-between space-y-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 block mb-2">Problema Real HORECA</span>
+            <h3 class="text-xl font-bold text-white leading-tight">
+              Eliminamos el 38% de Pérdida en Cáscara y Desperdicio
+            </h3>
+            <p class="text-xs text-stone-300 mt-3 leading-relaxed">
+              Cuando un restaurante compra plátano en bruto, más de un tercio del peso se bota a la basura en cáscara, además de requerir horas de operarios pelando y tajando. Casa Tradición entrega 100% producto neto listo para la paila.
+            </p>
+          </div>
+          <div class="p-4 rounded-2xl bg-black/60 border border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[11px] text-stone-400 block uppercase font-bold">Rendimiento Neto</span>
+              <span class="text-2xl font-black text-emerald-400 font-cinzel">100% Útil</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[11px] text-stone-400 block uppercase font-bold">Merma de Cocina</span>
+              <span class="text-2xl font-black text-rose-400 font-cinzel">0% Desperdicio</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento 3: Venta Directa a WhatsApp & QR (Span 4) -->
+        <div class="md:col-span-4 bezel-chassis p-6 space-y-4">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          </div>
+          <h4 class="text-base font-bold text-white">0% Comisiones Bancarias</h4>
+          <p class="text-xs text-stone-400 leading-relaxed">
+            En lugar de pagar a intermediarios (Wompi/Bold) comisiones del 3.5% + $900 COP por plato, el cliente transfiere por QR a Bancolombia o Nequi, reteniendo el 100% de la ganancia.
+          </p>
+        </div>
+
+        <!-- Bento 4: Arquitectura Gateway-Ready (Span 4) -->
+        <div class="md:col-span-4 bezel-chassis p-6 space-y-4">
+          <div class="w-10 h-10 rounded-2xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <h4 class="text-base font-bold text-white">Fase 2 Preparada</h4>
+          <p class="text-xs text-stone-400 leading-relaxed">
+            Dejamos la infraestructura en código completamente lista para integrar pasarelas de pago electrónico en cuestión de horas tan pronto Don Diego decida activarlas en el futuro.
+          </p>
+        </div>
+
+        <!-- Bento 5: Ultra Rápido en Móviles (Span 4) -->
+        <div class="md:col-span-4 bezel-chassis p-6 space-y-4">
+          <div class="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <h4 class="text-base font-bold text-white">Velocidad Extrema en Celular</h4>
+          <p class="text-xs text-stone-400 leading-relaxed">
+            Más del 85% de los cocineros y administradores compran desde su celular. La web carga en menos de 1 segundo con micro-interacciones táctiles nativas.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- SECCIÓN 3: MANIFIESTO GASTRONÓMICO CON SCRUBBING TEXT REVEAL -->
+    <section class="py-24 px-4 sm:px-6 max-w-5xl mx-auto text-center deferred-render" id="scrub-section">
+      <span class="text-xs font-bold uppercase tracking-widest text-[#D4AF37] block mb-6">Manifiesto de Marca</span>
+      <p class="text-2xl sm:text-4xl lg:text-5xl font-editorial italic font-normal leading-relaxed text-stone-500" id="scrub-quote">
+        "Llevamos la nobleza del campo colombiano a la más alta estandarización culinaria: cero mermas, cocción perfecta y el sabor inconfundible de nuestra tradición."
+      </p>
+      <div class="mt-8 flex items-center justify-center gap-3">
+        <div class="h-[1px] w-12 bg-[#D4AF37]/50"></div>
+        <span class="text-xs font-bold uppercase tracking-widest text-stone-300 font-cinzel">Casa Tradición Oficial</span>
+        <div class="h-[1px] w-12 bg-[#D4AF37]/50"></div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: SHOWROOM 3D DEL CATÁLOGO COMPLETO (25 REFERENCIAS) -->
+    <section id="catalogo" class="py-24 sm:py-32 px-4 sm:px-6 max-w-7xl mx-auto border-t border-white/10 deferred-render">
+      
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
+        <div class="space-y-2">
+          <span class="text-xs font-bold uppercase tracking-widest text-[#D4AF37] block">Portafolio Completo Digitalizado</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">
+            Showroom 3D de 25 Referencias
+          </h2>
+          <p class="text-sm text-stone-300 max-w-2xl">
+            Visualización dual interactiva: haz clic en cualquier tarjeta o utiliza el selector global para alternar entre el <strong>Plato Servido Gourmet</strong> y el <strong>Empaque al Vacío</strong>.
+          </p>
+        </div>
+
+        <!-- Interruptor Global de Vista -->
+        <div class="bezel-chassis p-1.5 flex items-center gap-1.5 self-start lg:self-auto shadow-2xl">
+          <button onclick="setGlobalFlip(false)" id="btn-toggle-dish" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-[#D4AF37] text-black transition-all shadow-md">
+            Plato Servido Gourmet
+          </button>
+          <button onclick="setGlobalFlip(true)" id="btn-toggle-pack" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-stone-300 hover:text-white transition-all">
+            Empaque al Vacío
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Filtros y Búsqueda Interactiva -->
+      <div class="bezel-chassis p-3 mb-10 flex flex-col md:flex-row items-center justify-between gap-4">
+        
+        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto" id="filter-tabs-wrapper">
+          <button onclick="filterShowroom('todos', this)" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-[#D4AF37] text-black">Todos (25)</button>
+          <button onclick="filterShowroom('verde', this)" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold text-stone-300 hover:bg-white/5">Línea Verde (4)</button>
+          <button onclick="filterShowroom('maduro', this)" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold text-stone-300 hover:bg-white/5">Línea Maduro (5)</button>
+          <button onclick="filterShowroom('yuca', this)" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold text-stone-300 hover:bg-white/5">Línea Yuca (2)</button>
+          <button onclick="filterShowroom('tostones', this)" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold text-stone-300 hover:bg-white/5">Tostones Gourmet (9)</button>
+          <button onclick="filterShowroom('snacks', this)" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold text-stone-300 hover:bg-white/5">Snacks & Bases (5)</button>
+        </div>
+
+        <!-- Buscador en Vivo -->
+        <div class="relative w-full md:w-80">
+          <input type="text" id="showroom-search" oninput="searchShowroom(this.value)" placeholder="Buscar tostón, yuca, tajada, aborrajado..." class="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-[#D4AF37] transition-all">
+          <svg class="w-4 h-4 text-stone-400 absolute right-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+
+      </div>
+
+      <!-- Rejilla de Tarjetas 3D con Efecto Flip -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="showroom-grid">
+        <!-- Inyectado dinámicamente con JavaScript optimizado -->
+      </div>
+
+    </section>
+
+    <!-- SECCIÓN 5: SIMULADOR INTERACTIVO HORECA & CÁLCULO DE AHORRO -->
+    <section id="simulador" class="py-24 sm:py-32 px-4 sm:px-6 max-w-7xl mx-auto border-t border-white/10 deferred-render">
+      
+      <div class="text-center max-w-3xl mx-auto space-y-3 mb-14">
+        <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-4 py-1 rounded-full border border-emerald-500/20">
+          Herramienta de Rentabilidad para Restaurantes
+        </span>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white">
+          Simulador de Ahorro & Despacho HORECA
+        </h2>
+        <p class="text-sm text-stone-300">
+          Permite a cualquier chef o administrador calcular en segundos las horas de operario y los kilos de merma que ahorra al comprar a Casa Tradición.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Panel de Controles Deslizantes -->
+        <div class="lg:col-span-7 bezel-chassis p-6 sm:p-8 space-y-6">
+          
+          <h3 class="text-base font-bold text-white border-b border-white/10 pb-3 flex items-center justify-between">
+            <span>Variables Operativas del Establecimiento</span>
+            <span class="text-xs text-emerald-400 font-mono">Reactivo en Tiempo Real</span>
+          </h3>
+
+          <!-- Control 1: Porciones / Día -->
+          <div class="space-y-3">
+            <div class="flex justify-between text-xs font-semibold">
+              <span class="text-stone-300">Porciones servidas por día:</span>
+              <span class="text-base font-black text-[#D4AF37] font-cinzel" id="disp-dishes">140 porciones</span>
+            </div>
+            <input type="range" id="sim-dishes" min="30" max="600" step="10" value="140" oninput="runHorecaCalc()" class="w-full accent-[#D4AF37] cursor-pointer">
+            <div class="flex justify-between text-[11px] text-stone-500">
+              <span>30 (Bistró / Gastrobar)</span>
+              <span>150 (Asadero Tradicional)</span>
+              <span>600+ (Cadena / Gran Asador)</span>
+            </div>
+          </div>
+
+          <!-- Control 2: Días Operativos -->
+          <div class="space-y-3">
+            <div class="flex justify-between text-xs font-semibold">
+              <span class="text-stone-300">Días operativos al mes:</span>
+              <span class="text-base font-black text-emerald-400 font-cinzel" id="disp-days">26 días</span>
+            </div>
+            <input type="range" id="sim-days" min="15" max="31" step="1" value="26" oninput="runHorecaCalc()" class="w-full accent-emerald-500 cursor-pointer">
+            <div class="flex justify-between text-[11px] text-stone-500">
+              <span>15 días (Solo Fin de Semana)</span>
+              <span>26 días (Lunes a Sábado)</span>
+              <span>31 días (Operación Continua)</span>
+            </div>
+          </div>
+
+          <!-- Selector de Especialidad Gastronómica -->
+          <div class="space-y-2.5 pt-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-stone-400 block">Tipo de Menú y Especialidad:</span>
+            <div class="grid grid-cols-3 gap-2">
+              <button onclick="setSimMenu('asadero')" id="sim-btn-asadero" class="p-3 rounded-xl border border-[#D4AF37] bg-[#D4AF37]/15 text-left text-xs transition-all">
+                <span class="block font-bold text-white">Asadero / Parrilla</span>
+                <span class="text-[11px] text-[#D4AF37]">Tronquitos + Tostón Dúo</span>
+              </button>
+              <button onclick="setSimMenu('burger')" id="sim-btn-burger" class="p-3 rounded-xl border border-white/10 bg-black/40 text-left text-xs transition-all">
+                <span class="block font-bold text-white">Hamburguesería</span>
+                <span class="text-[11px] text-stone-400">Burguer Pintón + Yuca</span>
+              </button>
+              <button onclick="setSimMenu('tipico')" id="sim-btn-tipico" class="p-3 rounded-xl border border-white/10 bg-black/40 text-left text-xs transition-all">
+                <span class="block font-bold text-white">Típico / Cazuelas</span>
+                <span class="text-[11px] text-stone-400">Picado + Tostón 28cm</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Panel de Resultados Financieros Proyectados -->
+        <div class="lg:col-span-5 bezel-chassis p-6 sm:p-8 space-y-6">
+          
+          <h3 class="text-base font-bold text-white border-b border-white/10 pb-3 flex items-center justify-between">
+            <span>Ahorro Mensual Proyectado</span>
+            <span class="text-xs text-[#D4AF37] font-bold">100% Retorno</span>
+          </h3>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="p-4 rounded-2xl bg-black/50 border border-white/10">
+              <span class="text-[11px] text-stone-400 block uppercase font-bold">Merma Evitada</span>
+              <span class="text-2xl font-black text-emerald-400 font-cinzel mt-1 block" id="out-waste">1.383 Kg</span>
+              <span class="text-[10px] text-stone-400">Cáscaras no pagadas</span>
+            </div>
+            <div class="p-4 rounded-2xl bg-black/50 border border-white/10">
+              <span class="text-[11px] text-stone-400 block uppercase font-bold">Horas de Cocina</span>
+              <span class="text-2xl font-black text-[#D4AF37] font-cinzel mt-1 block" id="out-hours">32 Horas</span>
+              <span class="text-[10px] text-stone-400">Ahorro en mano de obra</span>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-gradient-to-br from-[#1C1814] to-[#120F0C] border border-[#D4AF37]/40 text-center space-y-1">
+            <span class="text-xs uppercase tracking-wider text-stone-300 font-semibold block">Ahorro Estimado al Mes</span>
+            <span class="text-3xl sm:text-4xl font-black text-gold-shimmer font-cinzel block" id="out-money">$4.730.000 COP</span>
+            <span class="text-[11px] text-emerald-400 font-bold block pt-1">¡El producto se paga solo con el desperdicio eliminado!</span>
+          </div>
+
+          <!-- Vista Previa de la Orden para WhatsApp -->
+          <div class="space-y-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-stone-400 block">Orden Sugerida para WhatsApp:</span>
+            <div class="bg-black/80 p-3.5 rounded-xl border border-white/10 text-[11px] font-mono text-stone-300 max-h-36 overflow-y-auto leading-relaxed whitespace-pre-wrap" id="wa-preview-text">
+              Cargando despacho...
+            </div>
+            <button onclick="sendHorecaOrderWhatsApp()" class="w-full py-3.5 btn-luxury-magnetic text-xs justify-center shadow-xl">
+              <span>Enviar Pedido al WhatsApp de Casa Tradición</span>
+              <span class="icon-bubble">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- SECCIÓN 6: DESGLOSE PRESUPUESTAL EXACTO ($2.500.000 COP) -->
+    <section id="presupuesto" class="py-24 sm:py-32 px-4 sm:px-6 max-w-7xl mx-auto border-t border-white/10 deferred-render">
+      
+      <div class="text-center max-w-3xl mx-auto space-y-3 mb-14">
+        <span class="text-xs font-bold uppercase tracking-widest text-[#D4AF37] bg-[#D4AF37]/10 px-4 py-1 rounded-full border border-[#D4AF37]/30">
+          Inversión Profesional Justificada
+        </span>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white">
+          Presupuesto Cerrado: $2.500.000 COP
+        </h2>
+        <p class="text-sm text-stone-300">
+          Cada peso está respaldado en entregables tangibles, horas de ingeniería y diseño de alto estándar. Sin cobros sorpresa ni sobrecostos.
+        </p>
+      </div>
+
+      <!-- Rejilla de las 5 Fases de Inversión -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Fase 1 -->
+        <div class="bezel-chassis p-6 flex flex-col justify-between space-y-5 border-t-2 border-t-[#D4AF37]">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-stone-400 mb-2">
+              <span>Fase 01</span>
+              <span class="text-[#D4AF37] font-bold font-cinzel text-base">$450.000 COP</span>
+            </div>
+            <h4 class="text-base font-bold text-white">Arquitectura & UI/UX Gastronómico</h4>
+            <ul class="text-xs text-stone-300 mt-4 space-y-2 leading-relaxed">
+              <li class="flex items-start gap-2">
+                <span class="text-[#D4AF37] mt-0.5">•</span>
+                <span>Identidad visual inspirada en la sede física y brochure oficial.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[#D4AF37] mt-0.5">•</span>
+                <span>Diseño 100% responsivo optimizado para móviles (Mobile-First).</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[#D4AF37] mt-0.5">•</span>
+                <span>Tratamiento y calibración de las fotos de los 25 productos.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="pt-3 border-t border-white/10 text-[11px] text-stone-400">
+            Entregable: Prototipo funcional interactivo
+          </div>
+        </div>
+
+        <!-- Fase 2 -->
+        <div class="bezel-chassis p-6 flex flex-col justify-between space-y-5 border-t-2 border-t-[#D4AF37]">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-stone-400 mb-2">
+              <span>Fase 02</span>
+              <span class="text-[#D4AF37] font-bold font-cinzel text-base">$750.000 COP</span>
+            </div>
+            <h4 class="text-base font-bold text-white">Catálogo 3D & 25 Fichas de Producto</h4>
+            <ul class="text-xs text-stone-300 mt-4 space-y-2 leading-relaxed">
+              <li class="flex items-start gap-2">
+                <span class="text-[#D4AF37] mt-0.5">•</span>
+                <span>Programación del showroom con efecto flip dual (vacío vs servido).</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[#D4AF37] mt-0.5">•</span>
+                <span>Clasificación por 5 líneas (Verde, Maduro, Yuca, Tostones, Snacks).</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[#D4AF37] mt-0.5">•</span>
+                <span>Selectores de gramaje (500g a 5kg) y unidades por referencia.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="pt-3 border-t border-white/10 text-[11px] text-stone-400">
+            Entregable: Catálogo de 25 referencias en vivo
+          </div>
+        </div>
+
+        <!-- Fase 3 -->
+        <div class="bezel-chassis p-6 flex flex-col justify-between space-y-5 border-t-2 border-t-emerald-500">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-stone-400 mb-2">
+              <span>Fase 03</span>
+              <span class="text-emerald-400 font-bold font-cinzel text-base">$650.000 COP</span>
+            </div>
+            <h4 class="text-base font-bold text-white">Motor de Órdenes a WhatsApp & QR</h4>
+            <ul class="text-xs text-stone-300 mt-4 space-y-2 leading-relaxed">
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-400 mt-0.5">•</span>
+                <span>Carrito reactivo que compila pedidos automáticamente a WhatsApp.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-400 mt-0.5">•</span>
+                <span>Módulo de pago directo QR (Bancolombia, Nequi) al 0% de comisiones.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-400 mt-0.5">•</span>
+                <span>Estructura preparada para pasarelas (Wompi/Bold) en Fase 2.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="pt-3 border-t border-white/10 text-[11px] text-stone-400">
+            Entregable: Checkout sin comisiones funcionando
+          </div>
+        </div>
+
+        <!-- Fase 4 -->
+        <div class="bezel-chassis p-6 flex flex-col justify-between space-y-5 border-t-2 border-t-[#D4AF37]">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-stone-400 mb-2">
+              <span>Fase 04</span>
+              <span class="text-[#D4AF37] font-bold font-cinzel text-base">$400.000 COP</span>
+            </div>
+            <h4 class="text-base font-bold text-white">Simulador HORECA & SEO Local</h4>
+            <ul class="text-xs text-stone-300 mt-4 space-y-2 leading-relaxed">
+              <li class="flex items-start gap-2">
+                <span class="text-[#D4AF37] mt-0.5">•</span>
+                <span>Calculadora de ahorro de mermas y porciones para restaurantes.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[#D4AF37] mt-0.5">•</span>
+                <span>Micro-animaciones cinematográficas con GSAP ScrollTrigger.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[#D4AF37] mt-0.5">•</span>
+                <span>Posicionamiento en Google para "plátano precocido al por mayor".</span>
+              </li>
+            </ul>
+          </div>
+          <div class="pt-3 border-t border-white/10 text-[11px] text-stone-400">
+            Entregable: Herramienta de ventas institucional
+          </div>
+        </div>
+
+        <!-- Fase 5 -->
+        <div class="bezel-chassis p-6 flex flex-col justify-between space-y-5 border-t-2 border-t-[#D4AF37]">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-stone-400 mb-2">
+              <span>Fase 05</span>
+              <span class="text-[#D4AF37] font-bold font-cinzel text-base">$250.000 COP</span>
+            </div>
+            <h4 class="text-base font-bold text-white">Cloud, SSL, Correo & Soporte 30 Días</h4>
+            <ul class="text-xs text-stone-300 mt-4 space-y-2 leading-relaxed">
+              <li class="flex items-start gap-2">
+                <span class="text-[#D4AF37] mt-0.5">•</span>
+                <span>Despliegue en servidor cloud de alta velocidad con SSL HTTPS.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[#D4AF37] mt-0.5">•</span>
+                <span>Enlace con el correo oficial `gerencia.tradicion@gmail.com`.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[#D4AF37] mt-0.5">•</span>
+                <span>Capacitación personalizada a Don Diego + 30 días de soporte.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="pt-3 border-t border-white/10 text-[11px] text-stone-400">
+            Entregable: Entrega formal y garantía técnica
+          </div>
+        </div>
+
+        <!-- Cuadro Resumen Total -->
+        <div class="bezel-chassis p-6 flex flex-col justify-between space-y-5 bg-gradient-to-br from-[#1C1814] to-[#120F0C] border-2 border-[#D4AF37]">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-[#D4AF37] block">Inversión Final</span>
+            <div class="text-3xl sm:text-4xl font-black text-white font-cinzel mt-2">
+              $2.500.000 <span class="text-sm font-semibold text-[#D4AF37]">COP</span>
+            </div>
+            <p class="text-xs text-stone-300 mt-4 leading-relaxed">
+              <strong>Modalidad de Pago:</strong><br>
+              • 50% ($1.250.000 COP) al inicio de actividades.<br>
+              • 50% ($1.250.000 COP) contra entrega y satisfacción final.
+            </p>
+          </div>
+          <a href="#aprobacion" class="w-full py-3 btn-luxury-magnetic text-xs justify-center shadow-2xl">
+            <span>Aprobar con el 50% de Anticipo</span>
+          </a>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- SECCIÓN 7: CRONOGRAMA INTERACTIVO (4 SEMANAS) -->
+    <section id="cronograma" class="py-24 sm:py-32 px-4 sm:px-6 max-w-7xl mx-auto border-t border-white/10 deferred-render">
+      
+      <div class="text-center max-w-3xl mx-auto space-y-3 mb-14">
+        <span class="text-xs font-bold uppercase tracking-widest text-[#D4AF37] bg-[#D4AF37]/10 px-4 py-1 rounded-full border border-[#D4AF37]/30">
+          Tiempos Claros de Entrega
+        </span>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white">
+          Plan de Acción en 4 Semanas
+        </h2>
+        <p class="text-sm text-stone-300">
+          Metodología ágil por sprints semanales con demos y validación directa con Don Diego.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        
+        <div class="bezel-chassis p-6 space-y-3 relative group">
+          <div class="w-8 h-8 rounded-full bg-[#D4AF37] text-black font-black text-xs flex items-center justify-center">1</div>
+          <span class="text-xs text-stone-400 block font-mono">Días 1 a 7</span>
+          <h4 class="text-sm font-bold text-white">Wireframes & Estructura UI</h4>
+          <p class="text-xs text-stone-400 leading-relaxed">
+            Diseño del look & feel definitivo, aprobación de tipografías, paleta cromática y maquetación inicial.
+          </p>
+          <span class="text-[10px] text-[#D4AF37] font-bold block pt-2">✓ Demo de Interfaz Aprobada</span>
+        </div>
+
+        <div class="bezel-chassis p-6 space-y-3 relative group">
+          <div class="w-8 h-8 rounded-full bg-white/10 text-white font-black text-xs flex items-center justify-center">2</div>
+          <span class="text-xs text-stone-400 block font-mono">Días 8 a 14</span>
+          <h4 class="text-sm font-bold text-white">Catálogo 3D & Fichas</h4>
+          <p class="text-xs text-stone-400 leading-relaxed">
+            Carga y optimización de las 25 referencias en sus 5 categorías con fotos en plato servido y al vacío.
+          </p>
+          <span class="text-[10px] text-[#D4AF37] font-bold block pt-2">✓ Catálogo 100% Navegable</span>
+        </div>
+
+        <div class="bezel-chassis p-6 space-y-3 relative group">
+          <div class="w-8 h-8 rounded-full bg-white/10 text-white font-black text-xs flex items-center justify-center">3</div>
+          <span class="text-xs text-stone-400 block font-mono">Días 15 a 21</span>
+          <h4 class="text-sm font-bold text-white">WhatsApp, QR & Simulador</h4>
+          <p class="text-xs text-stone-400 leading-relaxed">
+            Integración del motor de pedidos directo a WhatsApp, módulo QR de pagos y calculadora HORECA.
+          </p>
+          <span class="text-[10px] text-[#D4AF37] font-bold block pt-2">✓ Flujo de Compras Operativo</span>
+        </div>
+
+        <div class="bezel-chassis p-6 space-y-3 relative group">
+          <div class="w-8 h-8 rounded-full bg-emerald-500 text-black font-black text-xs flex items-center justify-center">4</div>
+          <span class="text-xs text-stone-400 block font-mono">Días 22 a 28</span>
+          <h4 class="text-sm font-bold text-white">Lanzamiento & Capacitación</h4>
+          <p class="text-xs text-stone-400 leading-relaxed">
+            Despliegue en la nube, pruebas en vivo, configuración de dominio, SSL y sesión de capacitación a Don Diego.
+          </p>
+          <span class="text-[10px] text-emerald-400 font-bold block pt-2">✓ Salida a Producción Oficial</span>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- SECCIÓN 8: APROBACIÓN Y CIERRE FORMAL -->
+    <section id="aprobacion" class="py-24 sm:py-32 px-4 sm:px-6 max-w-4xl mx-auto border-t border-white/10 text-center deferred-render">
+      
+      <div class="bezel-chassis p-8 sm:p-12 space-y-8 border-2 border-[#D4AF37] shadow-2xl relative overflow-hidden">
+        
+        <div class="space-y-3 relative z-10">
+          <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-xs font-bold uppercase tracking-widest text-[#D4AF37]">
+            <span>Conclusión Comercial</span>
+          </div>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">
+            ¿Damos Inicio al Proyecto?
+          </h2>
+          <p class="text-sm text-stone-300 max-w-xl mx-auto leading-relaxed">
+            Para iniciar de inmediato con la Fase 1, Don Diego puede confirmar respondiendo por WhatsApp con el siguiente mensaje preparado:
+          </p>
+        </div>
+
+        <!-- Tarjeta del Mensaje Listo para WhatsApp -->
+        <div class="bg-black/75 p-5 rounded-2xl border border-white/10 text-left font-mono text-xs text-stone-300 leading-relaxed relative z-10">
+          "Hola Santiago, apruebo la cotización de $2.500.000 COP para la plataforma web de Casa Tradición. Coordinemos el anticipo del 50% para dar inicio de inmediato al Sprint 1."
+        </div>
+
+        <!-- Botón de Aprobación que Dispara Confeti y Copia Mensaje -->
+        <div class="space-y-4 relative z-10">
+          <button onclick="triggerApprovalCelebration()" id="btn-approval-action" class="w-full py-4 btn-luxury-magnetic text-sm justify-center shadow-2xl">
+            <span>Aprobar Propuesta & Abrir WhatsApp de Santiago</span>
+            <span class="icon-bubble">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </span>
+          </button>
+
+          <a href="mailto:gerencia.tradicion@gmail.com?subject=Aprobación%20Cotización%20Web%20Casa%20Tradición&body=Hola%20Santiago,%20apruebo%20la%20cotización%20de%20$2.500.000%20COP%20para%20la%20plataforma%20web%20de%20Casa%20Tradición." class="w-full py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 transition-all">
+            <span>Enviar Confirmación Oficial por Correo Electrónico</span>
+          </a>
+        </div>
+
+        <div class="text-[11px] text-stone-400 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2 relative z-10">
+          <span>Destinatario: Don Diego • Gerencia General Casa Tradición</span>
+          <span>Validez: 15 días calendario • Octubre 2026</span>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="border-t border-white/10 py-12 bg-black/90">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
+        <div class="flex items-center gap-2.5">
+          <img src="assets/logo_casa_tradicion.png" alt="Casa Tradición" class="w-6 h-6 object-contain" width="24" height="24">
+          <span class="font-cinzel font-bold text-white">CASA TRADICIÓN</span>
+          <span>•</span>
+          <span>Precocidos, Prelistos & Snacks</span>
+        </div>
+        <div>
+          Propuesta técnica y comercial desarrollada por <strong class="text-stone-300">Santiago Guerra</strong>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- GAVETA LATERAL / CARRITO FLOTANTE (CART DRAWER) -->
+  <div id="cart-drawer" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-[#120F0D] border-l border-[#D4AF37]/30 shadow-2xl z-50 transform translate-x-full transition-transform duration-500 ease-out flex flex-col justify-between p-6">
+    <div>
+      <div class="flex items-center justify-between pb-4 border-b border-white/10">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Orden en Construcción</h3>
+        </div>
+        <button onclick="toggleCartDrawer()" class="text-stone-400 hover:text-white font-bold text-lg p-1">✕</button>
+      </div>
+
+      <div id="cart-items-list" class="mt-4 space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+        <div class="text-xs text-stone-500 py-8 text-center">
+          No has agregado referencias aún.<br>Usa el botón "+ Cotizar" en el catálogo.
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-4 border-t border-white/10 space-y-3">
+      <div class="flex items-center justify-between text-xs font-bold text-white">
+        <span>Total Referencias:</span>
+        <span id="cart-total-badge" class="text-[#D4AF37] font-cinzel text-base">0 productos</span>
+      </div>
+      <button onclick="sendCartWhatsApp()" class="w-full py-3.5 btn-luxury-magnetic text-xs justify-center shadow-xl">
+        <span>Enviar Orden por WhatsApp</span>
+      </button>
+      <button onclick="openModalPayment()" class="w-full py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-stone-300 rounded-xl text-xs font-semibold transition-all">
+        Ver Módulo de Pago QR (0% Comisión)
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL DE PAGO QR DIRECTO (SIN COMISIÓN) -->
+  <div id="modal-payment" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bezel-chassis rounded-3xl max-w-md w-full p-6 sm:p-7 border border-[#D4AF37]/50 shadow-2xl space-y-5 relative bg-[#14110E]">
+      <button onclick="closeModalPayment()" class="absolute top-4 right-4 text-stone-400 hover:text-white font-bold text-lg">✕</button>
+
+      <div class="text-center space-y-1">
+        <span class="text-xs uppercase font-bold text-[#D4AF37] bg-[#D4AF37]/15 px-3 py-0.5 rounded-full border border-[#D4AF37]/30">0% Comisiones Intermedias</span>
+        <h3 class="text-xl font-bold text-white mt-2">Transferencia QR Directa</h3>
+        <p class="text-xs text-stone-400">El 100% de cada pago ingresa a Casa Tradición sin recargos bancarios</p>
+      </div>
+
+      <!-- Pestañas de Métodos QR -->
+      <div class="flex items-center justify-center gap-2 p-1 bg-black/60 rounded-xl border border-white/10 text-xs">
+        <button onclick="setQRTab('bancolombia')" id="qr-tab-bancolombia" class="px-3 py-1.5 rounded-lg bg-[#D4AF37] text-black font-bold">Bancolombia</button>
+        <button onclick="setQRTab('nequi')" id="qr-tab-nequi" class="px-3 py-1.5 rounded-lg text-stone-300 hover:text-white">Nequi</button>
+        <button onclick="setQRTab('daviplata')" id="qr-tab-daviplata" class="px-3 py-1.5 rounded-lg text-stone-300 hover:text-white">Daviplata</button>
+      </div>
+
+      <div class="p-5 bg-white rounded-2xl flex flex-col items-center justify-center shadow-2xl">
+        <svg class="w-40 h-40 text-black" viewBox="0 0 100 100" fill="currentColor">
+          <path d="M10 10h30v30H10zm6 6v18h18V16zm4 4h10v10H20zm40-10h30v30H60zm6 6v18h18V16zm4 4h10v10H70zM10 60h30v30H10zm6 6v18h18V66zm4 4h10v10H20zm44-6h6v6h-6zm10 0h6v6h-6zm10 0h6v6h-6zm-20 10h6v6h-6zm20 0h6v6h-6zm-10 10h6v6h-6zm10 0h6v6h-6zm-20 10h6v6h-6zm10 0h6v6h-6z"/>
+        </svg>
+        <span class="text-xs font-bold text-stone-900 font-cinzel mt-2 tracking-wider" id="qr-account-label">BANCOLOMBIA • CUENTA OFICIAL</span>
+      </div>
+
+      <div class="bg-black/60 p-3.5 rounded-xl border border-white/10 text-xs text-stone-300 space-y-1">
+        <p><strong>1.</strong> Escanea el código con tu aplicación financiera.</p>
+        <p><strong>2.</strong> Realiza la transferencia del valor exacto.</p>
+        <p><strong>3.</strong> Adjunta la captura al chat de WhatsApp para despacho prioritario.</p>
+      </div>
+
+      <button onclick="closeModalPayment()" class="w-full py-3 bg-white/10 hover:bg-white/15 text-white font-bold rounded-xl text-xs transition-all">
+        Cerrar Ventana
+      </button>
+    </div>
+  </div>
+
+  <!-- SCRIPT DE ALTO RENDIMIENTO (CANVAS AMBIENTAL 60FPS + CATALOGO 3D + SIMULADOR) -->
+  <script>
+    /* ==========================================================================
+       1. CANVAS AMBIENTAL DE ALTO RENDIMIENTO (ORBES VOLUMÉTRICOS & EMBERS)
+       Renderizado GPU 2D sin recarga del DOM, pausado cuando está inactivo
+       ========================================================================== */
+    const canvas = document.getElementById('ambient-canvas');
+    const ctx = canvas ? canvas.getContext('2d') : null;
+
+    let width = 0, height = 0;
+    let mouse = { x: -100, y: -100, targetX: -100, targetY: -100 };
+    let embers = [];
+    let isCanvasActive = true;
+
+    // Configuración de los 3 Orbes Volumétricos (Terracota, Oro Líquido, Selva Colombiana)
+    const orbs = [
+      { x: 0.15, y: 0.12, r: 0.38, color: 'rgba(168, 74, 46, 0.16)', vx: 0.0003, vy: 0.0002 },
+      { x: 0.85, y: 0.25, r: 0.42, color: 'rgba(31, 77, 37, 0.18)', vx: -0.00025, vy: 0.00035 },
+      { x: 0.50, y: 0.65, r: 0.45, color: 'rgba(212, 175, 55, 0.11)', vx: 0.0002, vy: -0.0002 },
+      { x: 0.20, y: 0.88, r: 0.35, color: 'rgba(110, 43, 24, 0.15)', vx: -0.0003, vy: -0.0002 }
+    ];
+
+    function resizeCanvas() {
+      if (!canvas) return;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+
+    function initEmbers() {
+      embers = [];
+      const count = window.innerWidth < 768 ? 18 : 36;
+      for (let i = 0; i < count; i++) {
+        embers.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          size: Math.random() * 2.2 + 1,
+          speedY: Math.random() * 0.45 + 0.25,
+          speedX: (Math.random() - 0.5) * 0.3,
+          opacity: Math.random() * 0.6 + 0.2,
+          pulse: Math.random() * Math.PI * 2,
+          pulseSpeed: Math.random() * 0.03 + 0.015,
+          color: Math.random() > 0.4 ? 'rgba(212, 175, 55, ' : 'rgba(234, 88, 12, '
+        });
+      }
+    }
+
+    function drawAmbientCanvas() {
+      if (!isCanvasActive || !ctx) return;
+
+      ctx.clearRect(0, 0, width, height);
+
+      // 1. Fondo Base Carbón Profundo
+      ctx.fillStyle = '#070605';
+      ctx.fillRect(0, 0, width, height);
+
+      // 2. Movimiento suave de orbes ambientales
+      orbs.forEach(orb => {
+        orb.x += orb.vx;
+        orb.y += orb.vy;
+        if (orb.x < 0.05 || orb.x > 0.95) orb.vx *= -1;
+        if (orb.y < 0.05 || orb.y > 0.95) orb.vy *= -1;
+
+        const cx = orb.x * width + (mouse.x - width / 2) * 0.03;
+        const cy = orb.y * height + (mouse.y - height / 2) * 0.03;
+        const radius = Math.min(width, height) * orb.r;
+
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+        grad.addColorStop(0, orb.color);
+        grad.addColorStop(1, 'rgba(7, 6, 5, 0)');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // 3. Embers Flotantes (Chispas Doradas de Brasa)
+      embers.forEach(p => {
+        p.y -= p.speedY;
+        p.x += p.speedX;
+        p.pulse += p.pulseSpeed;
+
+        if (p.y < -10) {
+          p.y = height + 10;
+          p.x = Math.random() * width;
+        }
+        if (p.x < -10) p.x = width + 10;
+        if (p.x > width + 10) p.x = -10;
+
+        const currentAlpha = p.opacity * (0.6 + Math.sin(p.pulse) * 0.4);
+        ctx.fillStyle = p.color + currentAlpha + ')';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      requestAnimationFrame(drawAmbientCanvas);
+    }
+
+    // Pausar render si la pestaña está oculta para ahorrar 100% batería y CPU
+    document.addEventListener('visibilitychange', () => {
+      isCanvasActive = !document.hidden;
+      if (isCanvasActive) requestAnimationFrame(drawAmbientCanvas);
+    });
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      initEmbers();
+    });
+
+    resizeCanvas();
+    initEmbers();
+    requestAnimationFrame(drawAmbientCanvas);
+
+    /* ==========================================================================
+       2. CURSOR MAGNÉTICO ULTRA-FLUIDO (RAF LERP SIN JANK)
+       ========================================================================== */
+    const cursor = document.getElementById('custom-cursor');
+    const dot = document.getElementById('custom-cursor-dot');
+    let curX = -100, curY = -100;
+    let dotX = -100, dotY = -100;
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.targetX = e.clientX;
+      mouse.targetY = e.clientY;
+      mouse.x += (mouse.targetX - mouse.x) * 0.1;
+      mouse.y += (mouse.targetY - mouse.y) * 0.1;
+    }, { passive: true });
+
+    function renderCursor() {
+      if (cursor && dot) {
+        curX += (mouse.targetX - curX) * 0.15;
+        curY += (mouse.targetY - curY) * 0.15;
+        dotX += (mouse.targetX - dotX) * 0.6;
+        dotY += (mouse.targetY - dotY) * 0.6;
+
+        cursor.style.transform = `translate3d(${curX - 15}px, ${curY - 15}px, 0)`;
+        dot.style.transform = `translate3d(${dotX - 3}px, ${dotY - 3}px, 0)`;
+      }
+      requestAnimationFrame(renderCursor);
+    }
+    requestAnimationFrame(renderCursor);
+
+    // Delegación de eventos eficiente para hover de cursor
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest('a, button, input, .flip-card-3d')) {
+        if (cursor) {
+          cursor.style.width = '46px';
+          cursor.style.height = '46px';
+          cursor.style.backgroundColor = 'rgba(212, 175, 55, 0.15)';
+          cursor.style.borderColor = '#D4AF37';
+        }
+      }
+    });
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.closest('a, button, input, .flip-card-3d')) {
+        if (cursor) {
+          cursor.style.width = '30px';
+          cursor.style.height = '30px';
+          cursor.style.backgroundColor = 'transparent';
+          cursor.style.borderColor = 'rgba(212, 175, 55, 0.7)';
+        }
+      }
+    });
+
+    /* ==========================================================================
+       3. BASE DE DATOS DE PRODUCTOS Y SHOWROOM 3D OPTIMIZADO
+       ========================================================================== */
+    const productosData = [
+      // LÍNEA VERDE (4)
+      { id: 1, cat: 'verde', name: 'Plátano Picado (Trozos)', desc: 'Trozos precortados listos para frijoles, caldos y espese de sopas.', cant: '500g a 1kg', pack: 'assets/products/img-000.png', dish: 'assets/products/img-001.png', dishName: 'Frijolada Tradicional con Plátano' },
+      { id: 2, cat: 'verde', name: 'Plátano Entero Verde', desc: 'Plátano verde pelado y seleccionado. 3 unidades por paquete al vacío.', cant: '500g a 1kg (3 unds)', pack: 'assets/products/img-002.png', dish: 'assets/products/img-003.png', dishName: 'Cazuela de Sancocho Típico' },
+      { id: 3, cat: 'verde', name: 'Plátano Timbal Verde', desc: 'Corte timbal listo para hervir en caldos y preparaciones de restaurante.', cant: '500g a 1kg', pack: 'assets/products/img-004.png', dish: 'assets/products/img-005.png', dishName: 'Sancocho Trifásico Colombiano' },
+      { id: 4, cat: 'verde', name: 'Moneda Verde Prelisto', desc: 'Monedas de plátano verde tajadas para sopa de moneditas y ajiaco.', cant: '500g a 2.5kg', pack: 'assets/products/img-021.png', dish: 'assets/products/img-022.png', dishName: 'Sopa Gourmet de Moneditas' },
+
+      // LÍNEA MADURO (5)
+      { id: 5, cat: 'maduro', name: 'Plátano Maduro Entero', desc: 'Maduración natural con dulzura óptima. Para rellenar con queso y bocadillo o asar.', cant: '3 maduros x paq', pack: 'assets/products/img-006.png', dish: 'assets/products/img-007.png', dishName: 'Maduro Asado Gratinado con Queso' },
+      { id: 6, cat: 'maduro', name: 'Tajada de Maduro Prelista', desc: 'Tajadas de maduro ideales para estandarizar desayunos y almuerzos ejecutivos.', cant: '500g a 2.5kg', pack: 'assets/products/img-011.png', dish: 'assets/products/img-012.png', dishName: 'Bandeja con Tajada Dorada Crocante' },
+      { id: 7, cat: 'maduro', name: 'Tronquitos de Maduro', desc: 'Corte grueso para asaderos y parrillas. Caramelización uniforme.', cant: '500g a 2.5kg', pack: 'assets/products/img-013.png', dish: 'assets/products/img-014.png', dishName: 'Parrilla Mixta con Tronquitos' },
+      { id: 8, cat: 'maduro', name: 'Cubos de Maduro Prelisto', desc: 'Cortados en cubos para arroz al Wok, arroz con pollo y salteados.', cant: '500g a 2kg', pack: 'assets/products/img-015.png', dish: 'assets/products/img-016.png', dishName: 'Arroz al Wok con Plátano Dulce' },
+      { id: 9, cat: 'maduro', name: 'Aborrajado Valluno Premium', desc: 'Plátano maduro dulce, masa fina crocante y abundante queso derretible.', cant: '9 unidades x paq', pack: 'assets/products/img-041.png', dish: 'assets/products/img-042.png', dishName: 'Aborrajado Tradicional con Queso' },
+
+      // LÍNEA YUCA (2)
+      { id: 10, cat: 'yuca', name: 'Yuca Astilla Seleccionada', desc: 'Pelada, desvenada y en astillas. Lista para cocción en sancocho o fritura rápida.', cant: '500g a 5kg', pack: 'assets/products/img-008.png', dish: 'assets/products/img-009.png', dishName: 'Sancocho con Yuca Astilla' },
+      { id: 11, cat: 'yuca', name: 'Croquetas de Yuca 8cm', desc: 'Croquetas de yuca de textura suave por dentro y crocante al freír.', cant: '500g a 2kg', pack: 'assets/products/img-025.png', dish: 'assets/products/img-026.png', dishName: 'Entrada de Croquetas de Yuca' },
+
+      // TOSTONES GOURMET (9)
+      { id: 12, cat: 'tostones', name: 'Patacón Verde Prelisto', desc: 'Estandariza los servicios con fritura rápida y crocancia garantizada.', cant: '500g a 2.5kg', pack: 'assets/products/img-017.png', dish: 'assets/products/img-018.png', dishName: 'Patacón Verde con Guiso Criollo' },
+      { id: 13, cat: 'tostones', name: 'Patacón Pintón Prelisto', desc: 'Equilibrio perfecto entre sal y notas dulces para asaderos y carnes.', cant: '500g a 2.5kg', pack: 'assets/products/img-019.png', dish: 'assets/products/img-020.png', dishName: 'Patacón Pintón con Ahogado' },
+      { id: 14, cat: 'tostones', name: 'Burguer Pintón Prelisto', desc: 'Tostón circular calibrado para reemplazar el pan en hamburguesas gourmet.', cant: '10 unidades x paq', pack: 'assets/products/img-023.png', dish: 'assets/products/img-024.png', dishName: 'Hamburguesa en Pan de Patacón' },
+      { id: 15, cat: 'tostones', name: 'Tostón Pisao 10cm', desc: 'Delgados y crocantes con láminas separadoras para agilizar el servicio.', cant: '10 unidades x paq', pack: 'assets/products/img-027.png', dish: 'assets/products/img-028.png', dishName: 'Tostón Pisao Extra Crocante' },
+      { id: 16, cat: 'tostones', name: 'Tostón Redondo 17cm', desc: 'Formato estándar para platos a la carta, ajiacos y sancochos.', cant: '10 unidades x paq', pack: 'assets/products/img-029.png', dish: 'assets/products/img-030.png', dishName: 'Plato Fuerte con Tostón 17cm' },
+      { id: 17, cat: 'tostones', name: 'Tostón Artesanal 18cm', desc: 'Bordes rústicos para bandeja paisa, pescados fritos y asados.', cant: '10 unidades x paq', pack: 'assets/products/img-031.png', dish: 'assets/products/img-032.png', dishName: 'Pescado Frito con Tostón 18cm' },
+      { id: 18, cat: 'tostones', name: 'Tostón Ovalado 17x24cm', desc: 'Formato alargado diseñado para patacón con todo y carnes desmechadas.', cant: '10 unidades x paq', pack: 'assets/products/img-033.png', dish: 'assets/products/img-034.png', dishName: 'Patacón con Todo Criollo' },
+      { id: 19, cat: 'tostones', name: 'Tostón Jumbo 28cm', desc: 'Tamaño gigante de 28cm para platos especiales o para compartir al centro.', cant: '10 unidades x paq', pack: 'assets/products/img-035.png', dish: 'assets/products/img-036.png', dishName: 'Super Patacón Familiar 28cm' },
+      { id: 20, cat: 'tostones', name: 'Tostón Dúo 13cm Universal', desc: 'Medida estándar universal para costillas, asados, picadas y eventos.', cant: '20 unidades x paq', pack: 'assets/products/img-037.png', dish: 'assets/products/img-038.png', dishName: 'Picada Criolla con Tostón Dúo' },
+
+      // SNACKS, BASES & CANASTAS (5)
+      { id: 21, cat: 'snacks', name: 'Totuma de Plátano Prelista', desc: 'Base cóncava para servir guisos o ceviches en eventos gastronómicos.', cant: '12 unidades x paq', pack: 'assets/products/img-039.png', dish: 'assets/products/img-040.png', dishName: 'Totuma Rellena Criolla' },
+      { id: 22, cat: 'snacks', name: 'Mini-Canasta Frita 8cm', desc: 'Canastas de 8cm listas para ceviche, camarones o guacamole.', cant: '30 unidades x paq', pack: 'assets/products/img-044.png', dish: 'assets/products/img-045.png', dishName: 'Mini Canastas con Camarones' },
+      { id: 23, cat: 'snacks', name: 'Canasta Estándar Frita 14cm', desc: 'Canastas de 14cm para platos completos servidos en vajilla comestible.', cant: '10 unidades x paq', pack: 'assets/products/img-046.png', dish: 'assets/products/img-047.png', dishName: 'Canasta con Pollo y Champiñones' },
+      { id: 24, cat: 'snacks', name: 'Cono Estándar Frito 14cm', desc: 'Conos crocantes listos para rellenar con ensaladas o pollo desmechado.', cant: '10 unidades x paq', pack: 'assets/products/img-048.png', dish: 'assets/products/img-049.png', dishName: 'Cono Gourmet Street Food' },
+      { id: 25, cat: 'snacks', name: 'Platanitos Snacks 8cm', desc: 'Chips de plátano verde en empaque individual para venta directa en mostrador.', cant: 'Paquete x 40 unds', pack: 'assets/products/img-050.png', dish: 'assets/products/img-051.png', dishName: 'Exhibidor de Platanitos Snacks' }
+    ];
+
+    let isFlippedPackGlobal = false;
+    let activeCategory = 'todos';
+    let searchQuery = '';
+    let cartItems = [];
+
+    function renderShowroom() {
+      const container = document.getElementById('showroom-grid');
+      if (!container) return;
+      let items = productosData;
+
+      if (activeCategory !== 'todos') {
+        items = items.filter(i => i.cat === activeCategory);
+      }
+      if (searchQuery.trim() !== '') {
+        const q = searchQuery.toLowerCase();
+        items = items.filter(i => i.name.toLowerCase().includes(q) || i.desc.toLowerCase().includes(q));
+      }
+
+      container.innerHTML = items.map(p => `
+        <div class="bezel-chassis p-4 flex flex-col justify-between group transition-all duration-300" id="card-${p.id}">
+          <div>
+            <!-- Contenedor 3D con Flip -->
+            <div class="flip-card-3d rounded-2xl aspect-[4/3] bg-black/70 mb-3.5 cursor-pointer ${isFlippedPackGlobal ? 'is-flipped' : ''}" onclick="toggleCardFlip(${p.id})">
+              <div class="flip-card-inner">
+                <!-- Front: Plato Servido Gourmet -->
+                <div class="flip-card-front relative">
+                  <img src="${p.dish}" alt="${p.dishName}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" width="300" height="225" onerror="this.src='assets/logo_casa_tradicion.png'">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent"></div>
+                  <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between">
+                    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-black/80 text-white border border-white/10">Plato Servido</span>
+                    <span class="text-[11px] font-bold text-[#D4AF37] px-2.5 py-0.5 rounded-full bg-black/80">#${String(p.id).padStart(2, '0')}</span>
+                  </div>
+                </div>
+                <!-- Back: Empaque al Vacío -->
+                <div class="flip-card-back relative">
+                  <img src="${p.pack}" alt="${p.name}" class="w-full h-full object-cover" loading="lazy" decoding="async" width="300" height="225" onerror="this.src='assets/logo_casa_tradicion.png'">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent"></div>
+                  <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between">
+                    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#1F4D25]/90 text-emerald-300 border border-emerald-500/30">Empaque al Vacío</span>
+                    <span class="text-[11px] font-bold text-white px-2.5 py-0.5 rounded-full bg-black/80">#${String(p.id).padStart(2, '0')}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-start justify-between gap-2">
+              <h4 class="text-sm font-bold text-white group-hover:text-[#D4AF37] transition-colors leading-snug">${p.name}</h4>
+              <button onclick="toggleCardFlip(${p.id})" title="Girar Vista" class="text-stone-400 hover:text-[#D4AF37] p-1 flex-shrink-0 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              </button>
+            </div>
+            <p class="text-xs text-stone-400 mt-1.5 line-clamp-2">${p.desc}</p>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-white/10 space-y-2.5">
+            <div class="flex items-center justify-between text-xs text-stone-400">
+              <span>Presentación:</span>
+              <strong class="text-white">${p.cant}</strong>
+            </div>
+            <button onclick="addToCart('${p.name}', '${p.cant}')" class="w-full py-2 bg-white/5 hover:bg-[#D4AF37] hover:text-black border border-[#D4AF37]/30 text-[#D4AF37] rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
+              <span>+ Cotizar Referencia</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleCardFlip(id) {
+      const card = document.querySelector(`#card-${id} .flip-card-3d`);
+      if (card) card.classList.toggle('is-flipped');
+    }
+
+    function setGlobalFlip(flipped) {
+      isFlippedPackGlobal = flipped;
+      const btnDish = document.getElementById('btn-toggle-dish');
+      const btnPack = document.getElementById('btn-toggle-pack');
+      if (flipped) {
+        btnPack.className = 'px-5 py-2.5 rounded-xl text-xs font-bold bg-[#D4AF37] text-black transition-all shadow-md';
+        btnDish.className = 'px-5 py-2.5 rounded-xl text-xs font-semibold text-stone-300 hover:text-white transition-all';
+      } else {
+        btnDish.className = 'px-5 py-2.5 rounded-xl text-xs font-bold bg-[#D4AF37] text-black transition-all shadow-md';
+        btnPack.className = 'px-5 py-2.5 rounded-xl text-xs font-semibold text-stone-300 hover:text-white transition-all';
+      }
+      document.querySelectorAll('.flip-card-3d').forEach(c => {
+        if (flipped) c.classList.add('is-flipped');
+        else c.classList.remove('is-flipped');
+      });
+    }
+
+    function filterShowroom(cat, btn) {
+      activeCategory = cat;
+      document.querySelectorAll('#filter-tabs-wrapper .filter-btn').forEach(b => {
+        b.className = 'filter-btn px-4 py-2 rounded-xl text-xs font-semibold text-stone-300 hover:bg-white/5';
+      });
+      btn.className = 'filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-[#D4AF37] text-black';
+      renderShowroom();
+    }
+
+    function searchShowroom(val) {
+      searchQuery = val;
+      renderShowroom();
+    }
+
+    /* ==========================================================================
+       4. CARRITO FLOTANTE Y MOTOR WHATSAPP
+       ========================================================================== */
+    function toggleCartDrawer() {
+      const drawer = document.getElementById('cart-drawer');
+      drawer.classList.toggle('translate-x-full');
+    }
+
+    function addToCart(name, cant) {
+      const existing = cartItems.find(i => i.name === name);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cartItems.push({ name, cant, qty: 1 });
+      }
+      updateCartUI();
+      const badge = document.getElementById('header-cart-count');
+      if (badge && typeof gsap !== 'undefined') {
+        gsap.fromTo(badge, { scale: 1.4 }, { scale: 1, duration: 0.25, ease: "back.out(2)" });
+      }
+      const drawer = document.getElementById('cart-drawer');
+      if (drawer.classList.contains('translate-x-full')) {
+        drawer.classList.remove('translate-x-full');
+      }
+    }
+
+    function updateCartUI() {
+      const list = document.getElementById('cart-items-list');
+      const badge = document.getElementById('header-cart-count');
+      const totalBadge = document.getElementById('cart-total-badge');
+
+      const totalItems = cartItems.reduce((acc, i) => acc + i.qty, 0);
+      badge.textContent = totalItems;
+      totalBadge.textContent = `${totalItems} productos`;
+
+      if (cartItems.length === 0) {
+        list.innerHTML = `<div class="text-xs text-stone-500 py-8 text-center">No has agregado referencias aún.<br>Usa el botón "+ Cotizar" en el catálogo.</div>`;
+        return;
+      }
+
+      list.innerHTML = cartItems.map((item, idx) => `
+        <div class="p-3 rounded-xl bg-black/60 border border-white/10 flex items-center justify-between text-xs">
+          <div>
+            <strong class="text-white block">${item.name}</strong>
+            <span class="text-stone-400 text-[11px]">${item.cant}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="changeQty(${idx}, -1)" class="w-6 h-6 rounded bg-white/10 text-white font-bold flex items-center justify-center">-</button>
+            <span class="font-bold text-[#D4AF37] px-1">${item.qty}</span>
+            <button onclick="changeQty(${idx}, 1)" class="w-6 h-6 rounded bg-white/10 text-white font-bold flex items-center justify-center">+</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function changeQty(index, delta) {
+      cartItems[index].qty += delta;
+      if (cartItems[index].qty <= 0) cartItems.splice(index, 1);
+      updateCartUI();
+    }
+
+    function sendCartWhatsApp() {
+      if (cartItems.length === 0) {
+        alert("Agrega al menos una referencia para cotizar.");
+        return;
+      }
+      let text = `*COTIZACIÓN DE PRODUCTOS - CASA TRADICIÓN*\n`;
+      text += `===================================\n`;
+      cartItems.forEach(i => {
+        text += `• ${i.qty}x ${i.name} (${i.cant})\n`;
+      });
+      text += `===================================\n`;
+      text += `*Destino:* Restaurante / Negocio HORECA\n`;
+      text += `*Forma de Pago:* Transferencia QR Directo (0% Comisión)\n`;
+      text += `Por favor cotizar disponibilidad y tiempos de entrega.`;
+
+      const encoded = encodeURIComponent(text);
+      window.open(`https://wa.me/?text=${encoded}`, '_blank');
+    }
+
+    /* ==========================================================================
+       5. SIMULADOR HORECA REACTIVO
+       ========================================================================== */
+    let currentSimMenu = 'asadero';
+
+    function setSimMenu(menu) {
+      currentSimMenu = menu;
+      document.querySelectorAll('[id^="sim-btn-"]').forEach(b => {
+        b.className = 'p-3 rounded-xl border border-white/10 bg-black/40 text-left text-xs transition-all';
+      });
+      document.getElementById(`sim-btn-${menu}`).className = 'p-3 rounded-xl border border-[#D4AF37] bg-[#D4AF37]/15 text-left text-xs transition-all';
+      runHorecaCalc();
+    }
+
+    function runHorecaCalc() {
+      const dishes = parseInt(document.getElementById('sim-dishes').value);
+      const days = parseInt(document.getElementById('sim-days').value);
+
+      document.getElementById('disp-dishes').textContent = `${dishes} porciones`;
+      document.getElementById('disp-days').textContent = `${days} días`;
+
+      const totalPortions = dishes * days;
+      const netKg = totalPortions * 0.22;
+      const wasteRaw = Math.round(netKg * 0.38);
+      const hoursSaved = Math.round(netKg / 26);
+      const money = Math.round((wasteRaw * 3400) + (hoursSaved * 9800));
+      const formatted = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(money);
+
+      document.getElementById('out-waste').textContent = `${wasteRaw.toLocaleString('es-CO')} Kg`;
+      document.getElementById('out-hours').textContent = `${hoursSaved} Horas`;
+      document.getElementById('out-money').textContent = `${formatted} COP`;
+
+      let msg = `*SOLICITUD DE DESPACHO SEMANAL - CASA TRADICIÓN*\n`;
+      msg += `=========================================\n`;
+      msg += `*Cliente:* Restaurante / Canal HORECA\n`;
+      msg += `*Volumen:* ${dishes} porciones/día (${days} días/mes)\n`;
+      msg += `*Línea Seleccionada:* ${currentSimMenu.toUpperCase()}\n`;
+      msg += `-----------------------------------------\n`;
+      if (currentSimMenu === 'asadero') {
+        msg += `• 14x Tronquitos de Maduro (2.5 kg)\n`;
+        msg += `• 10x Tostón Dúo 13cm Universal (x20 unds)\n`;
+        msg += `• 5x Yuca Astilla Seleccionada (5 kg)\n`;
+      } else if (currentSimMenu === 'burger') {
+        msg += `• 18x Burguer Pintón Prelisto (x10 unds)\n`;
+        msg += `• 8x Croquetas de Yuca 8cm (2 kg)\n`;
+        msg += `• 4x Platanitos Snacks (x40 unds)\n`;
+      } else {
+        msg += `• 12x Plátano Picado Trozos (1 kg)\n`;
+        msg += `• 8x Tostón Jumbo 28cm (x10 unds)\n`;
+        msg += `• 10x Tajada de Maduro Prelista (2.5 kg)\n`;
+      }
+      msg += `-----------------------------------------\n`;
+      msg += `*Ahorro Proyectado en Merma:* ${wasteRaw} Kg/mes\n`;
+      msg += `*Forma de Pago:* Transferencia QR Directo (0% Comisión)`;
+
+      document.getElementById('wa-preview-text').textContent = msg;
+    }
+
+    function sendHorecaOrderWhatsApp() {
+      const text = document.getElementById('wa-preview-text').textContent;
+      const encoded = encodeURIComponent(text);
+      window.open(`https://wa.me/?text=${encoded}`, '_blank');
+    }
+
+    /* ==========================================================================
+       6. MODAL QR & PESTAÑAS
+       ========================================================================== */
+    function openModalPayment() {
+      document.getElementById('modal-payment').classList.remove('hidden');
+    }
+    function closeModalPayment() {
+      document.getElementById('modal-payment').classList.add('hidden');
+    }
+
+    function setQRTab(method) {
+      ['bancolombia', 'nequi', 'daviplata'].forEach(m => {
+        const btn = document.getElementById(`qr-tab-${m}`);
+        if (m === method) {
+          btn.className = 'px-3 py-1.5 rounded-lg bg-[#D4AF37] text-black font-bold';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg text-stone-300 hover:text-white';
+        }
+      });
+      const label = document.getElementById('qr-account-label');
+      if (method === 'bancolombia') label.textContent = 'BANCOLOMBIA • CUENTA OFICIAL';
+      else if (method === 'nequi') label.textContent = 'NEQUI • TRANSFERENCIA DIRECTA';
+      else label.textContent = 'DAVIPLATA • 0% COMISIÓN';
+    }
+
+    /* ==========================================================================
+       7. CELEBRACIÓN DE APROBACIÓN
+       ========================================================================== */
+    function triggerApprovalCelebration() {
+      if (typeof confetti !== 'undefined') {
+        confetti({
+          particleCount: 120,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#D4AF37', '#FDE68A', '#10B981', '#FFFFFF']
+        });
+      }
+
+      const msg = "Hola Santiago, apruebo la cotización de $2.500.000 COP para la plataforma web de Casa Tradición. Coordinemos el anticipo del 50% para dar inicio de inmediato al Sprint 1.";
+      navigator.clipboard.writeText(msg).then(() => {
+        const btn = document.getElementById('btn-approval-action');
+        btn.innerHTML = '<span>✓ ¡Propuesta Aprobada! Abriendo WhatsApp...</span>';
+        btn.className = 'w-full py-4 bg-emerald-500 text-black font-extrabold rounded-full text-sm flex items-center justify-center gap-2 shadow-2xl transition-all';
+        setTimeout(() => {
+          const encoded = encodeURIComponent(msg);
+          window.open(`https://wa.me/?text=${encoded}`, '_blank');
+        }, 1200);
+      });
+    }
+
+    /* ==========================================================================
+       8. GSAP SCROLLTRIGGER ANIMACIONES AL CARGAR
+       ========================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      renderShowroom();
+      runHorecaCalc();
+
+      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero Reveal
+        gsap.from(".hero-line", { opacity: 0, y: 35, duration: 1.2, ease: "power3.out" });
+        gsap.from("#hero p", { opacity: 0, y: 20, duration: 1, delay: 0.25, ease: "power3.out" });
+        gsap.from("#hero .bezel-chassis", { opacity: 0, scale: 0.95, duration: 1, delay: 0.45, ease: "back.out(1.4)" });
+
+        // Scrubbing Quote Reveal
+        gsap.fromTo("#scrub-quote", 
+          { color: "rgba(255, 255, 255, 0.2)", filter: "blur(2px)" },
+          {
+            color: "rgba(255, 255, 255, 1)",
+            filter: "blur(0px)",
+            scrollTrigger: {
+              trigger: "#scrub-section",
+              start: "top 75%",
+              end: "bottom 55%",
+              scrub: 1.2
+            }
+          }
+        );
+
+        // Section Staggers Ligeros
+        gsap.utils.toArray("section").forEach(sec => {
+          if (sec.id !== 'hero') {
+            gsap.from(sec, {
+              scrollTrigger: {
+                trigger: sec,
+                start: "top 85%",
+                toggleActions: "play none none none"
+              },
+              opacity: 0,
+              y: 30,
+              duration: 0.8,
+              ease: "power2.out"
+            });
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
