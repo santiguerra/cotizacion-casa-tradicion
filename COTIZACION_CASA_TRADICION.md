@@ -188,8 +188,12 @@ Implementaremos el mismo motor robusto usado en plataformas PWA de élite:
 
 **Valor Total del Proyecto:** $2.500.000 COP
 
-**Mantenimiento Mensual (Opcional post-lanzamiento):** $150.000 COP
-*Incluye soporte técnico 24/7 y actualizaciones de seguridad. Aplica sistema de referidos: si nos refieren un cliente que cierre contrato, el mantenimiento baja al 50% ($75.000 COP) y se añaden módulos gratis.*
+**Mantenimiento Operativo Mensual (Requisito Obligatorio):** $150.000 COP
+Al ser un software vivo y no una plantilla estática, este rubro es indispensable para mantener el sistema en el aire. Incluye:
+*   **Infraestructura Cloud:** Pago de servidores en Google Firebase y consumo de base de datos.
+*   **Blindaje de Seguridad:** Certificados SSL, encriptación de datos de clientes HORECA y copias de seguridad.
+*   **Soporte Técnico 24/7:** Monitoreo activo para un 99.9% de uptime (la página nunca se cae) y resolución de bugs.
+*Aplica sistema de referidos: si nos refieren un cliente que cierre contrato con la agencia, este costo operativo baja al 50% ($75.000 COP) y desbloquean módulos de código gratis.*
 
 ### Planes de Pago Flexibles:
 
