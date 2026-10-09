@@ -190,7 +190,7 @@ Implementaremos el mismo motor robusto usado en plataformas PWA de élite:
 
 **Mantenimiento Operativo Mensual (Requisito Obligatorio):** $150.000 COP
 Al ser un software vivo y no una plantilla estática, este rubro es indispensable para mantener el sistema en el aire. Incluye:
-*   **Infraestructura Cloud:** Pago de servidores en Google Firebase y consumo de base de datos.
+*   **Gestión de Infraestructura:** Administración técnica, monitoreo y asesoría/acompañamiento para la configuración de pagos directos de dominios y servidores (Google Firebase).
 *   **Blindaje de Seguridad:** Certificados SSL, encriptación de datos de clientes HORECA y copias de seguridad.
 *   **Soporte Técnico 24/7:** Monitoreo activo para un 99.9% de uptime (la página nunca se cae) y resolución de bugs.
 *Aplica sistema de referidos: si nos refieren un cliente que cierre contrato con la agencia, este costo operativo baja al 50% ($75.000 COP) y desbloquean módulos de código gratis.*
