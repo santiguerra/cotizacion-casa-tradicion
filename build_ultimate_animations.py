@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+import os
+
+html = """<!DOCTYPE html>
 <html lang="es" class="bg-[#070605] text-white">
 <head>
   <meta charset="UTF-8">
@@ -540,3 +542,6 @@
   </script>
 </body>
 </html>
+"""
+with open("index.html", "w") as f:
+    f.write(html)
